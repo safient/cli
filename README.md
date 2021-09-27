@@ -11,7 +11,23 @@ CLI tool to run a Safien worker and interact with the safes on Safient protocol.
 ### Running the Safien worker on a testnet
 
 ```
-  safient safien worker --name Safient --email hello@safient.io --network local 
+  safient safien worker --name Safient --email hello@safient.io --network testnet
+
+```
+
+### Interacting with the Safient protocol
+
+Create a safe:
+
+```
+  ssafient safe create --beneficiary did:key:z6MknvaZuK44SWdsK8m6t3mq7AWQ2Hj1zGhVTPywcPGS7qFf --data 'Test safe' --network testnet
+
+```
+
+Show a safe:
+
+```
+  safient safe show 01fgbz287dvds1ft1e4tdbjqkp --network testnet
 
 ```
 

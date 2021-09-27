@@ -5,6 +5,7 @@ import { privateToAddress } from 'ethereumjs-util'
 import { readFileSync, writeFileSync } from 'fs'
 // import { generate } from 'qrcode-terminal'
 
+import { info, success } from '../utils/message'
 import networks from './networks'
 import { Network } from '../types'
 
@@ -22,6 +23,7 @@ export class Wallet {
 
     const account: Account = await this._retrievAccount(mnemonic)
 
+    console.log(success('New account created'))
     console.log(
       '🔐 Account Generated as ' +
         account.address +
@@ -39,10 +41,8 @@ export class Wallet {
     const wallet_hdpath = "m/44'/60'/0'/0/"
     const account_index = 0
     const fullPath = wallet_hdpath + account_index
-    console.log('fullPath', fullPath)
     const wallet = hdwallet.derivePath(fullPath).getWallet()
     const privateKey = '0x' + wallet.getPrivateKey().toString('hex')
-    console.log('privateKey', privateKey)
 
     const address = '0x' + privateToAddress(wallet.getPrivateKey()).toString('hex')
 
@@ -62,12 +62,10 @@ export class Wallet {
 
     // generate(account.address, { small: true });
 
-    console.log(
-      '‍📬 Your address ' + account.address + (await signableAccount.getAddress()),
-    )
+    console.log(info('Retriving account information'))
+    console.log('‍📬 Your address ' + account.address)
 
     let provider
-    console.log(Network[network].toString(), Network.local.toString())
     if (Network[network] == Network.local.toString()) {
       provider = new providers.JsonRpcProvider(networks.localhost.url)
     } else if (Network[network].toString() == Network.testnet.toString()) {
@@ -86,10 +84,10 @@ export class Wallet {
     return this.walletProvider
   }
 
-  async send() {
+  async send(to: string, value: string) {
     const tx = {
-      to: '0x958543756A4c7AC6fB361f0efBfeCD98E4D297Db',
-      value: utils.parseEther('0.01'),
+      to: to,
+      value: utils.parseEther(value),
     }
 
     const txResponse = await this.walletProvider?.sendTransaction(tx)

@@ -1,12 +1,8 @@
 import type { Server } from 'http'
-import { SafientSDK } from '@safient/core'
+import { Safient } from './safient'
 
 import { createServer } from '../server'
 import { Network, WorkerOptions } from '../types'
-import { Wallet } from '../utils/wallet'
-
-const apiKey = process.env.USER_API_KEY
-const secret = process.env.USER_API_SECRET
 
 const DEFAULT_CONFIG = {
   name: '',
@@ -28,7 +24,7 @@ export class SafienWorker {
   private server?: Server
   public hostname?: string
   public port?: number
-  public wallet?: Wallet
+  public safient?: Safient
 
   constructor() {
     // Initialize the Safient worker here
@@ -43,31 +39,12 @@ export class SafienWorker {
 
     this.port = options.port
 
+    this.safient = new Safient(options.network)
+
     // Initializing a wallet account that is connected to the provided network
-    this.wallet = new Wallet()
-    const account = await this.wallet.account(options.network)
 
     // Initialize Safient core.
-    const safient = new SafientSDK(account, await account.getChainId(), 'threadDB')
-    const safien = await safient.safientCore.connectUser(apiKey, secret)
-    const loginUser = await safient.safientCore.getLoginUser(
-      safien.idx ? safien.idx.id : '',
-    )
-    if (loginUser.email !== options.email) {
-      console.log(
-        'Email mismatch. Make sure you have provided the correct email of the user',
-      )
-    }
-
-    if (!loginUser) {
-      const userAddress = await account.getAddress()
-      await safient.safientCore.registerNewUser(
-        options.name,
-        options.email,
-        0,
-        userAddress,
-      )
-    }
+    await this.safient.createUser(options.name, options.email)
 
     // Initializing a server
     this.server = await createServer(options.port, options.hostname)

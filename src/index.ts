@@ -1,6 +1,7 @@
 import { Command } from 'commander'
 
 import { SafienWorker } from './lib/worker'
+import { Safient } from './lib/safient'
 
 const program = new Command()
 const worker = new SafienWorker()
@@ -55,18 +56,43 @@ safien
     },
   )
 
+const user = program.command('user')
+user.description('Safient users')
+
+user
+  .command('create')
+  .description('Create an user')
+  .requiredOption('--name <string>', 'Name of the Safien')
+  .requiredOption('--email <email>', 'Email of the Safien')
+  .option(
+    '--network <string>',
+    'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
+  )
+  .action(async ({ name, email, network }) => {
+    const safient = new Safient(network)
+    await safient.createUser(name, email)
+  })
+
 const safe = program.command('safe')
 safe.description('Safient safes')
 
 safe
   .command('create')
   .description('Create a safe')
-  .action(async streamId => {
-    // await callsomething()
+  .requiredOption('--beneficiary <string>', 'DID/ Email of the Beneficiary')
+  .requiredOption('--data <string>', 'Safe data')
+  .option(
+    '--network <name>',
+    'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
+  )
+  .action(async ({ data, beneficiary, network }) => {
+    const safient = new Safient(network)
+    await safient.connectUser()
+    await safient.createSafe(beneficiary, data)
   })
 
 safe
-  .command('update [<safeId>]')
+  .command('update <safeId>')
   .description('Update the safe')
   .action(async safeId => {
     // await callsomething()
@@ -80,10 +106,16 @@ safe
   })
 
 safe
-  .command('show [<safeId>]')
+  .command('show <safeId>')
   .description('Show the safe info')
-  .action(async safeId => {
-    // await callsomething()
+  .option(
+    '--network <string>',
+    'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
+  )
+  .action(async (safeId, { network }) => {
+    const safient = new Safient(network)
+    await safient.connectUser()
+    await safient.showSafe(safeId)
   })
 
 program.parse(process.argv)
