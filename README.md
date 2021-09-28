@@ -17,10 +17,18 @@ CLI tool to run a Safien worker and interact with the safes on Safient protocol.
 
 ### Interacting with the Safient protocol
 
-Create a safe:
+Create a new user:
 
 ```
-  ssafient safe create --beneficiary did:key:z6MknvaZuK44SWdsK8m6t3mq7AWQ2Hj1zGhVTPywcPGS7qFf --data 'Test safe' --network testnet
+  safient user create --name Safient1 --email safient1@safient.io --network testnet
+
+```
+
+
+Create a new safe:
+
+```
+  safient safe create --beneficiary did:key:z6MknvaZuK44SWdsK8m6t3mq7AWQ2Hj1zGhVTPywcPGS7qFf --data 'Test safe' --network testnet
 
 ```
 

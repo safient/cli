@@ -10,7 +10,9 @@
   "files": [
     "dist"
   ],
-  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "format": "prettier --write src/*.ts src/**/*.ts src/**/**/*.ts",
     "lint": "eslint . --ext .ts,.tsx",
@@ -31,7 +33,7 @@
   },
   "dependencies": {
     "@awaitjs/express": "^0.8.0",
-    "@safient/core": "^0.1.1-alpha",
+    "@safient/core": "^0.1.2-alpha",
     "bip39": "^3.0.4",
     "chalk": "^4.1.2",
     "commander": "^8.2.0",

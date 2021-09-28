@@ -85,10 +85,14 @@ safe
     '--network <name>',
     'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
   )
-  .action(async ({ data, beneficiary, network }) => {
+  .option(
+    '--onchain',
+    'If the safe creation should happen onchain"',
+  )
+  .action(async ({ data, beneficiary, network, onchain }) => {
     const safient = new Safient(network)
     await safient.connectUser()
-    await safient.createSafe(beneficiary, data)
+    await safient.createSafe(beneficiary, data, onchain) 
   })
 
 safe

@@ -4,7 +4,7 @@ import { SafientSDK } from '@safient/core'
 
 import { Network } from '../types'
 import { Wallet } from '../utils/wallet'
-import { error, success, warning, info } from '../utils/message'
+import { success, warning, info } from '../utils/message'
 
 const apiKey = process.env.USER_API_KEY
 const secret = process.env.USER_API_SECRET
@@ -63,13 +63,14 @@ export class Safient {
     return true
   }
 
-  async createSafe(beneficiary: string, data: string) {
+  async createSafe(beneficiary: string, data: string, onchain = false ) {
+
     console.log(info('Creating a new safe'))
     const safe = await this.safient?.safientCore.createNewSafe(
       this.user.did,
       beneficiary,
       data,
-      false,
+      onchain,
       0,
       0,
     )
