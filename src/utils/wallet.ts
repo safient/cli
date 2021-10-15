@@ -63,7 +63,7 @@ export class Wallet {
     // generate(account.address, { small: true });
 
     console.log(info('Retriving account information'))
-    console.log('‍📬 Your address ' + account.address)
+    console.log(info('‍📬 Your wallet address '), account.address)
 
     let provider
     if (Network[network] == Network.local.toString()) {

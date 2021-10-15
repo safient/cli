@@ -1,10 +1,10 @@
 //TODO: Export the types used in @safient/core
 
-import { SafientSDK } from '@safient/core'
+import { SafientCore } from '@safient/core'
 
 import { Network } from '../types'
 import { Wallet } from '../utils/wallet'
-import { success, warning, info } from '../utils/message'
+import { success, warning, info, error } from '../utils/message'
 
 const apiKey = process.env.USER_API_KEY
 const secret = process.env.USER_API_SECRET
@@ -12,7 +12,7 @@ const secret = process.env.USER_API_SECRET
 export class Safient {
   private wallet?: Wallet
   private network: Network
-  private safient?: SafientSDK
+  private safient?: SafientCore
   private userConnection: any
   private user: any
 
@@ -26,9 +26,10 @@ export class Safient {
     const account = await this.wallet.account(this.network)
 
     // Initialize Safient core.
-    this.safient = new SafientSDK(account, await account.getChainId(), 'threadDB')
-    this.userConnection = await this.safient.safientCore.connectUser(apiKey, secret)
-    this.user = await this.safient.safientCore.getLoginUser(
+    this.safient = new SafientCore(account, await account.getChainId(), 'threadDB')
+    this.userConnection = await this.safient.connectUser(apiKey, secret)
+    console.log(info('Your DID: '), this.userConnection.idx.id)
+    this.user = await this.safient.getLoginUser(
       this.userConnection.idx ? this.userConnection.idx.id : '',
     )
     return true
@@ -40,15 +41,15 @@ export class Safient {
     const account = await this.wallet.account(this.network)
 
     // Initialize Safient core.
-    this.safient = new SafientSDK(account, await account.getChainId(), 'threadDB')
-    this.userConnection = await this.safient.safientCore.connectUser(apiKey, secret)
-    this.user = await this.safient.safientCore.getLoginUser(
+    this.safient = new SafientCore(account, await account.getChainId(), 'threadDB')
+    this.userConnection = await this.safient.connectUser(apiKey, secret)
+    this.user = await this.safient.getLoginUser(
       this.userConnection.idx ? this.userConnection.idx.id : '',
     )
 
     if (!this.user) {
       const userAddress = await account.getAddress()
-      await this.safient.safientCore.registerNewUser(name, email, 0, userAddress)
+      await this.safient.registerNewUser(name, email, 0, userAddress)
 
       console.log(success('A new user account has been suuccessfully createed 🔐 : '))
     } else if (this.user.email !== email) {
@@ -63,10 +64,9 @@ export class Safient {
     return true
   }
 
-  async createSafe(beneficiary: string, data: string, onchain = false ) {
-
+  async createSafe(beneficiary: string, data: string, onchain = false) {
     console.log(info('Creating a new safe'))
-    const safe = await this.safient?.safientCore.createNewSafe(
+    const safe = await this.safient?.createNewSafe(
       this.user.did,
       beneficiary,
       data,
@@ -80,9 +80,13 @@ export class Safient {
 
   async showSafe(safeId: string) {
     console.log(info('Retrieving safe info'))
-    const safe = await this.safient?.safientCore.getSafeData(safeId)
+    const safe = await this.safient?.getSafeData(safeId)
 
-    console.log(success('Safe details 🔐 : '))
-    console.log(safe)
+    if(safe) {
+    console.log(success('Safe details 🔐 : '), safe)
+    }
+    else {
+      console.log(error('Safe not found'))
+    }
   }
 }
