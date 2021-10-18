@@ -5,6 +5,7 @@ import { SafientCore } from '@safient/core'
 import { Network } from '../types'
 import { Wallet } from '../utils/wallet'
 import { success, warning, info, error } from '../utils/message'
+import { SafeData } from '@safient/core/dist/types/types'
 
 const apiKey = process.env.USER_API_KEY
 const secret = process.env.USER_API_SECRET
@@ -33,6 +34,11 @@ export class Safient {
       this.userConnection.idx ? this.userConnection.idx.id : '',
     )
     return true
+  }
+
+   myInfo(): any {
+
+    return this.user
   }
 
   async createUser(name: string, email: string): Promise<boolean> {
@@ -78,15 +84,16 @@ export class Safient {
     console.log(success('Safe has been created with id 🔐 : '), safe)
   }
 
-  async showSafe(safeId: string) {
+  async showSafe(safeId: string): Promise<SafeData|undefined> {
     console.log(info('Retrieving safe info'))
     const safe = await this.safient?.getSafeData(safeId)
 
-    if(safe) {
-    console.log(success('Safe details 🔐 : '), safe)
-    }
-    else {
+    if (safe) {
+      console.log(success('Safe details 🔐 : '), safe)
+    } else {
       console.log(error('Safe not found'))
     }
+    
+    return safe
   }
 }

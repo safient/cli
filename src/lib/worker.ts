@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
   hostname: '0.0.0.0',
   debug: false,
   verbose: false,
-  network: Network.local,
+  network: Network.testnet,
 }
 
 /**
@@ -39,15 +39,14 @@ export class SafienWorker {
 
     this.port = options.port
 
+     // Initialize Safient core.
     this.safient = new Safient(options.network)
 
-    // Initializing a wallet account that is connected to the provided network
-
-    // Initialize Safient core.
+    // Connecting the user or creating a new one if doesn't already exist
     await this.safient.createUser(options.name, options.email)
 
     // Initializing a server
-    this.server = await createServer(options.port, options.hostname)
+    this.server = await createServer(options.port, options.hostname, this.safient)
     return this.server
   }
 
@@ -77,7 +76,7 @@ export class SafienWorker {
     }
 
     if (options.network) {
-      conf.network = options.network
+      conf.network = parseInt(Network[options.network])
     }
 
     if (options.port) {
