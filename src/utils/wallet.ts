@@ -85,7 +85,7 @@ export class Wallet {
     return this.walletProvider
   }
 
-  async send(to: string, value: string) {
+  async send(to: string, value: string): Promise<void> {
     const tx = {
       to: to,
       value: utils.parseEther(value),

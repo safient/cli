@@ -5,6 +5,8 @@ export enum Network {
 }
 
 export type WorkerOptions = {
+  
+  registed: boolean
   name: string
   email: string
   config: string

@@ -24,10 +24,11 @@ export class SafienWorker {
   private server?: Server
   public hostname?: string
   public port?: number
-  public safient?: Safient
+  public safient: Safient
 
-  constructor() {
+  constructor(safient: Safient) {
     // Initialize the Safient worker here
+    this.safient = safient
   }
 
   /**
@@ -39,11 +40,10 @@ export class SafienWorker {
 
     this.port = options.port
 
-     // Initialize Safient core.
-    this.safient = new Safient(options.network)
-
     // Connecting the user or creating a new one if doesn't already exist
-    await this.safient.createUser(options.name, options.email)
+    if(!opts.registed) {
+      await this.safient.createUser(options.name, options.email)
+    }
 
     // Initializing a server
     this.server = await createServer(options.port, options.hostname, this.safient)
@@ -51,40 +51,40 @@ export class SafienWorker {
   }
 
   _loadConfig(options: WorkerOptions): WorkerOptions {
-    const conf = DEFAULT_CONFIG
-    conf.email = options.email
-    conf.name = options.name
 
-    if (options.config) {
-      conf.config = options.config
+    const conf = options
+    conf.network = parseInt(Network[options.network])
+
+    if (!options.config) {
+      conf.config = DEFAULT_CONFIG.config
     }
 
-    if (options.debug) {
-      conf.debug = options.debug
+    if (!options.debug) {
+      conf.debug = DEFAULT_CONFIG.debug
     }
 
-    if (options.ethereumRpc) {
-      conf.ethereumRpc = options.ethereumRpc
+    if (!options.ethereumRpc) {
+      conf.ethereumRpc = DEFAULT_CONFIG.ethereumRpc
     }
 
-    if (options.hostname) {
-      conf.hostname = options.hostname
+    if (!options.hostname) {
+      conf.hostname = DEFAULT_CONFIG.hostname
     }
 
-    if (options.ipfsApi) {
-      conf.ipfsApi = options.ipfsApi
+    if (!options.ipfsApi) {
+      conf.ipfsApi = DEFAULT_CONFIG.ipfsApi
     }
 
-    if (options.network) {
-      conf.network = parseInt(Network[options.network])
+    if (!options.network) {
+      conf.network = DEFAULT_CONFIG.network
     }
 
-    if (options.port) {
-      conf.port = options.port
+    if (!options.port) {
+      conf.port = DEFAULT_CONFIG.port
     }
 
-    if (options.verbose) {
-      conf.verbose = options.verbose
+    if (!options.verbose) {
+      conf.verbose = DEFAULT_CONFIG.verbose
     }
 
     return conf
