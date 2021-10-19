@@ -50,6 +50,7 @@ export class Wallet {
   }
 
   async account(network: Network): Promise<EthersWallet> {
+
     let mnemonic
     try {
       mnemonic = readFileSync('./mnemonic.txt').toString().trim()
@@ -63,12 +64,12 @@ export class Wallet {
     // generate(account.address, { small: true });
 
     console.log(info('Retriving account information'))
-    console.log('‍📬 Your address ' + account.address)
+    console.log(info('‍📬 Your wallet address '), account.address)
 
     let provider
-    if (Network[network] == Network.local.toString()) {
+    if (network == Network.local) {
       provider = new providers.JsonRpcProvider(networks.localhost.url)
-    } else if (Network[network].toString() == Network.testnet.toString()) {
+    } else if (network == Network.testnet) {
       provider = new providers.JsonRpcProvider(networks.kovan.url)
     } else {
       provider = new providers.JsonRpcProvider(networks.mainnet.url)
@@ -76,7 +77,7 @@ export class Wallet {
 
     const balance = await provider.getBalance(account.address)
 
-    console.log(' -- ' + network + ' --  -- -- 📡 ')
+    console.log(' -- ' + Network[network] + ' --  -- -- 📡 ')
     console.log('   balance: ' + utils.formatEther(balance))
     console.log('   nonce: ' + (await provider.getTransactionCount(account.address)))
 
@@ -84,7 +85,7 @@ export class Wallet {
     return this.walletProvider
   }
 
-  async send(to: string, value: string) {
+  async send(to: string, value: string): Promise<void> {
     const tx = {
       to: to,
       value: utils.parseEther(value),
