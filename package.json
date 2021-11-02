@@ -19,7 +19,7 @@
     "build": "npm run lint && ./node_modules/.bin/tsc -p tsconfig.json",
     "prepare": "npm run format && npm run lint && npm run build",
     "start": "npm run prepare && node ./dist/index.js start",
-    "test": "jest --passWithNoTests --detectOpenHandles --verbose",
+    "test": "mocha --timeout 120000",
     "test:watch": "jest --watch --passWithNoTests --detectOpenHandles --verbose"
   },
   "bin": {
@@ -33,18 +33,26 @@
   },
   "dependencies": {
     "@awaitjs/express": "^0.8.0",
-    "@safient/core": "^0.1.3-alpha",
+    "@safient/core": "file:../core-js",
     "bip39": "^3.0.4",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "chalk": "^4.1.2",
     "commander": "^8.2.0",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "delay": "^5.0.0",
     "dotenv": "^10.0.0",
     "ethereumjs-util": "^7.1.0",
     "ethereumjs-wallet": "^1.0.1",
-    "ethers": "5.4.4",
+    "ethers": "^5.4.3",
     "express": "4.17.1",
+    "got": "^9.6.0",
     "inquirer": "^8.2.0",
     "log-symbols": "^5.0.0",
+    "mocha": "^9.1.3",
+    "p-map": "^3.0.0",
+    "p-queue": "^7.1.0",
     "qrcode-terminal": "^0.12.0"
   },
   "devDependencies": {

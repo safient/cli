@@ -49,14 +49,18 @@ export class Wallet {
     return { address, privateKey }
   }
 
-  async account(network: Network): Promise<EthersWallet> {
-
+  async account(network: Network, secret?: string): Promise<EthersWallet> {
     let mnemonic
+    if (!secret) {
     try {
       mnemonic = readFileSync('./mnemonic.txt').toString().trim()
     } catch (e) {
       mnemonic = await this.create()
     }
+  }
+  else {
+    mnemonic = secret
+  }
 
     const account: Account = await this._retrievAccount(mnemonic)
     const signableAccount = new EthersWallet(account.privateKey)

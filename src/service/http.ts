@@ -20,15 +20,16 @@ export const createApp = async (safient: Safient): Promise<express.Express> => {
 
   // Endpoint for health checks
   app.getAsync('/health', (_, res) => {
-    res.json({message: 'Ready to roll!'})
+    res.json({ message: 'Ready to roll!' })
   })
 
   // Endpoint to get current user info
-  app.getAsync('/me', (_, resp) => { resp.json(safient.myInfo()) })
+  app.getAsync('/me', (_, resp) => {
+    resp.json(safient.myInfo())
+  })
 
   // Endpoint to get safe info
   app.getAsync('/safe', (req, resp) => getSafe(req, resp, safient))
-
 
   // Endpoint for version
   app.use('/version', (_, res) => {
@@ -38,7 +39,11 @@ export const createApp = async (safient: Safient): Promise<express.Express> => {
   return app
 }
 
-export const createServer = async (port: number, hostname: string, safient: Safient): Promise<Server> => {
+export const createServer = async (
+  port: number,
+  hostname: string,
+  safient: Safient,
+): Promise<Server> => {
   const app = await createApp(safient)
 
   return app.listen(port, hostname, () => {
