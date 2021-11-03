@@ -18,6 +18,12 @@ export const getSafe = async (
 }
 
 export const watchSafes = async (safient: Safient) => {
+
+  if(!fs.existsSync('safe.json')) {
+    fs.writeFileSync('safe.json', JSON.stringify({}))
+
+  } 
+
   for (;;) {
     // Poll safe details for every 5 seconds
     await delay(5000)
