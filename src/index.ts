@@ -2,11 +2,11 @@ import { Command } from 'commander'
 import inquirer from 'inquirer'
 
 import { Network } from './types'
-import { Gateway } from './lib/gateway'
-import { Worker } from './lib/worker'
-import { Safient } from './lib/safient'
+import { Gateway } from './utils/safient/gateway'
+import { Worker } from './utils/safient/worker'
+import { Safient } from './utils/safient'
 
-export async function cli() {
+export async function cli(): Promise<void> {
   const program = new Command()
 
   const safien = program.command('safien')
@@ -24,7 +24,7 @@ export async function cli() {
     .option('--verbose', 'Enable verbose logging level. Default is false')
     .option(
       '--network <name>',
-      'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
+      'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is testnet"',
     )
     .description('Start the Safient HTTP gateway')
     .action(
@@ -53,7 +53,7 @@ export async function cli() {
         ]
 
         const safient = new Safient(parseInt(Network[network]))
-        const registed = await safient.connectUser()
+        const registed = await safient.connect()
 
         if (!registed && (!email || !name)) {
           const answers = await inquirer.prompt(questions)
@@ -61,7 +61,7 @@ export async function cli() {
           name = answers.name
         }
 
-        const worker = new Worker(safient)
+        const worker = new Worker(parseInt(Network[network]))
         worker.create({
           registed,
           name,
@@ -72,7 +72,6 @@ export async function cli() {
           hostname,
           debug,
           verbose,
-          network,
         })
       },
     )
@@ -118,7 +117,7 @@ export async function cli() {
         ]
 
         const safient = new Safient(parseInt(Network[network]))
-        const registed = await safient.connectUser()
+        const registed = await safient.connect()
 
         if (!registed && (!email || !name)) {
           const answers = await inquirer.prompt(questions)
@@ -126,7 +125,7 @@ export async function cli() {
           name = answers.name
         }
 
-        const gateway = new Gateway(safient)
+        const gateway = new Gateway(parseInt(Network[network]))
         gateway.create({
           registed,
           name,
@@ -137,7 +136,6 @@ export async function cli() {
           hostname,
           debug,
           verbose,
-          network,
         })
       },
     )
@@ -156,8 +154,21 @@ export async function cli() {
     )
     .action(async ({ name, email, network }) => {
       const safient = new Safient(parseInt(Network[network]))
-      await safient.connectUser()
+      await safient.connect()
       await safient.createUser(name, email)
+    })
+
+  user
+    .command('info')
+    .description('Display user info')
+    .option(
+      '--network <string>',
+      'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
+    )
+    .action(async ({ network }) => {
+      const safient = new Safient(parseInt(Network[network]))
+      await safient.connect()
+      await safient.myInfo()
     })
 
   const safe = program.command('safe')
@@ -175,7 +186,7 @@ export async function cli() {
     .option('--onchain', 'If the safe creation should happen onchain"')
     .action(async ({ data, beneficiary, network, onchain }) => {
       const safient = new Safient(parseInt(Network[network]))
-      await safient.connectUser()
+      await safient.connect()
       await safient.createSafe(beneficiary, data, onchain)
     })
 
@@ -183,14 +194,14 @@ export async function cli() {
     .command('update <safeId>')
     .description('Update the safe')
     .action(async safeId => {
-      // await callsomething()
+      return safeId
     })
 
   safe
     .command('delete <safeId>')
     .description('Delete the safe')
     .action(async safeId => {
-      // await callsomething()
+      return safeId
     })
 
   safe
@@ -202,7 +213,7 @@ export async function cli() {
     )
     .action(async (safeId, { network }) => {
       const safient = new Safient(parseInt(Network[network]))
-      await safient.connectUser()
+      await safient.connect()
       await safient.showSafe(safeId)
     })
 

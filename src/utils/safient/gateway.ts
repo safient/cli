@@ -1,8 +1,8 @@
 import type { Server } from 'http'
-import { Safient } from './safient'
-import { watchSafes } from '../service/safient'
 
-import { Safe, Network, WorkerOptions } from '../types'
+import { createServer } from './http'
+import { Network, GatewayOptions } from '../../types'
+import { accountService } from '../../services'
 
 const DEFAULT_CONFIG = {
   name: '',
@@ -13,44 +13,42 @@ const DEFAULT_CONFIG = {
   hostname: '0.0.0.0',
   debug: false,
   verbose: false,
-  network: Network.testnet,
 }
 
 /**
- * Safient worker implementation
+ * Safient HTTP gateway
  */
-export class Worker {
+export class Gateway {
+  private network!: Network
   private server?: Server
   public hostname?: string
   public port?: number
-  public safient: Safient
 
-  constructor(safient: Safient) {
-    // Initialize the Safient worker here
-    this.safient = safient
+  constructor(network: Network) {
+    this.network = network
   }
 
   /**
-   * Create a Worker
-   * @param opts - Worker Options
+   * Create an HTTP gateway
+   * @param opts - Gateway Options
    */
-  async create(opts: WorkerOptions): Promise<void> {
+  async create(opts: GatewayOptions): Promise<Server> {
     const options = this._loadConfig(opts)
 
     this.port = options.port
 
     // Connecting the user or creating a new one if doesn't already exist
     if (!opts.registed) {
-      await this.safient.createUser(options.name, options.email)
-      await this.safient.connectUser()
+      await accountService.create(options.name, options.email)
     }
 
-    await watchSafes(this.safient)
+    // Initializing a server
+    this.server = await createServer(options.port, options.hostname)
+    return this.server
   }
 
-  _loadConfig(options: WorkerOptions): WorkerOptions {
+  _loadConfig(options: GatewayOptions): GatewayOptions {
     const conf = options
-    conf.network = parseInt(Network[options.network])
 
     if (!options.config) {
       conf.config = DEFAULT_CONFIG.config
@@ -66,10 +64,6 @@ export class Worker {
 
     if (!options.ipfsApi) {
       conf.ipfsApi = DEFAULT_CONFIG.ipfsApi
-    }
-
-    if (!options.network) {
-      conf.network = DEFAULT_CONFIG.network
     }
 
     if (!options.port) {

@@ -52,15 +52,14 @@ export class Wallet {
   async account(network: Network, secret?: string): Promise<EthersWallet> {
     let mnemonic
     if (!secret) {
-    try {
-      mnemonic = readFileSync('./mnemonic.txt').toString().trim()
-    } catch (e) {
-      mnemonic = await this.create()
+      try {
+        mnemonic = readFileSync('./mnemonic.txt').toString().trim()
+      } catch (e) {
+        mnemonic = await this.create()
+      }
+    } else {
+      mnemonic = secret
     }
-  }
-  else {
-    mnemonic = secret
-  }
 
     const account: Account = await this._retrievAccount(mnemonic)
     const signableAccount = new EthersWallet(account.privateKey)
@@ -71,7 +70,7 @@ export class Wallet {
     console.log(info('‍📬 Your wallet address '), account.address)
 
     let provider
-    if (network == Network.local) {
+    if (network == Network.local || network == Network.devnet) {
       provider = new providers.JsonRpcProvider(networks.localhost.url)
     } else if (network == Network.testnet) {
       provider = new providers.JsonRpcProvider(networks.kovan.url)

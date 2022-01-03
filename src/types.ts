@@ -1,9 +1,10 @@
-import { Types } from '@safient/core'
+import { Types, Enums } from '@safient/core'
 
 export enum Network {
-  mainnet,
-  testnet,
-  local,
+  mainnet = Enums.NetworkType.mainnet,
+  testnet = Enums.NetworkType.testnet,
+  local = Enums.NetworkType.localhost,
+  devnet = Enums.NetworkType.devnet,
 }
 
 export type WorkerOptions = {
@@ -16,7 +17,6 @@ export type WorkerOptions = {
   hostname: string
   debug: boolean
   verbose: boolean
-  network: Network
 }
 
 export type GatewayOptions = {
@@ -29,29 +29,22 @@ export type GatewayOptions = {
   hostname: string
   debug: boolean
   verbose: boolean
-  network: Network
 }
+
+export type User = Types.User
 
 export type Safe = Types.Safe
 
-export type SafeData = Types.SafeData
+export type SafeMeta = Types.SafeMeta
 
-// export type Response<T> = {
-//   result: T
-//   status: number
-// }
+export const DatabaseType = Enums.DatabaseType
 
-export const safeStages = {
-  ACTIVE: 0,
-  CLAIMING: 1,
-  RECOVERING: 2,
-  RECOVERED: 3,
-  CLAIMED: 4,
-}
+export const SafeStage = Enums.SafeStages
 
-export const claimStages = {
-  ACTIVE: 0,
-  PASSED: 1,
-  FAILED: 2,
-  REJECTED: 3,
-}
+export const claimStages = Enums.ClaimStages
+
+export type SecretSafe = Types.SecretSafe
+
+export type CryptoSafe = Types.CryptoSafe
+
+export type SafeStore = Types.SafeStore

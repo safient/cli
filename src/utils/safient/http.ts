@@ -2,10 +2,9 @@ import { addAsync, Router } from '@awaitjs/express'
 import express from 'express'
 import cors from 'cors'
 import type { Server } from 'http'
-import { getSafe } from './safient'
-import { Safient } from '../lib/safient'
+import { accountService, safeService } from '../../services'
 
-export const createApp = async (safient: Safient): Promise<express.Express> => {
+export const createApp = async (): Promise<express.Express> => {
   const app = addAsync(express())
 
   const baseRouter = Router()
@@ -25,11 +24,14 @@ export const createApp = async (safient: Safient): Promise<express.Express> => {
 
   // Endpoint to get current user info
   app.getAsync('/me', (_, resp) => {
-    resp.json(safient.myInfo())
+    resp.json(accountService.user)
   })
 
   // Endpoint to get safe info
-  app.getAsync('/safe', (req, resp) => getSafe(req, resp, safient))
+  app.getAsync('/safe', async (req, resp) => {
+    const safeId: string = req.query.id ? req.query.id.toString() : ''
+    resp.json(await safeService.get(safeId))
+  })
 
   // Endpoint for version
   app.use('/version', (_, res) => {
@@ -39,12 +41,8 @@ export const createApp = async (safient: Safient): Promise<express.Express> => {
   return app
 }
 
-export const createServer = async (
-  port: number,
-  hostname: string,
-  safient: Safient,
-): Promise<Server> => {
-  const app = await createApp(safient)
+export const createServer = async (port: number, hostname: string): Promise<Server> => {
+  const app = await createApp()
 
   return app.listen(port, hostname, () => {
     console.log(`Listening on port ${port}`)
