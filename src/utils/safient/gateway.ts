@@ -1,59 +1,54 @@
 import type { Server } from 'http'
-import { Safient } from './safient'
 
-import { createServer } from '../server'
-import { Network, WorkerOptions } from '../types'
+import { createServer } from './http'
+import { Network, GatewayOptions } from '../../types'
+import { accountService } from '../../services'
 
 const DEFAULT_CONFIG = {
   name: '',
   email: '',
   config: '',
   ipfsApi: 'ipfs.safient.io',
-  ethereumRpc: 'https://localhost:8545',
   port: 7000,
   hostname: '0.0.0.0',
   debug: false,
   verbose: false,
-  network: Network.testnet,
 }
 
 /**
- * Safient worker implementation
+ * Safient HTTP gateway
  */
-export class SafienWorker {
+export class Gateway {
+  private network!: Network
   private server?: Server
   public hostname?: string
   public port?: number
-  public safient: Safient
 
-  constructor(safient: Safient) {
-    // Initialize the Safient worker here
-    this.safient = safient
+  constructor(network: Network) {
+    this.network = network
   }
 
   /**
-   * Create a Worker
-   * @param opts - Worker Options
+   * Create an HTTP gateway
+   * @param opts - Gateway Options
    */
-  async create(opts: WorkerOptions): Promise<Server> {
+  async create(opts: GatewayOptions): Promise<Server> {
     const options = this._loadConfig(opts)
 
     this.port = options.port
 
     // Connecting the user or creating a new one if doesn't already exist
-    if(!opts.registed) {
-      await this.safient.createUser(options.name, options.email)
+    if (!opts.registed) {
+      await accountService.create(options.name, options.email)
     }
 
     // Initializing a server
-    this.server = await createServer(options.port, options.hostname, this.safient)
+    this.server = await createServer(options.port, options.hostname)
     return this.server
   }
 
-  _loadConfig(options: WorkerOptions): WorkerOptions {
-
+  _loadConfig(options: GatewayOptions): GatewayOptions {
     const conf = options
-    conf.network = parseInt(Network[options.network])
 
     if (!options.config) {
       conf.config = DEFAULT_CONFIG.config
@@ -63,20 +58,12 @@ export class SafienWorker {
       conf.debug = DEFAULT_CONFIG.debug
     }
 
-    if (!options.ethereumRpc) {
-      conf.ethereumRpc = DEFAULT_CONFIG.ethereumRpc
-    }
-
     if (!options.hostname) {
       conf.hostname = DEFAULT_CONFIG.hostname
     }
 
     if (!options.ipfsApi) {
       conf.ipfsApi = DEFAULT_CONFIG.ipfsApi
-    }
-
-    if (!options.network) {
-      conf.network = DEFAULT_CONFIG.network
     }
 
     if (!options.port) {
