@@ -1,5 +1,3 @@
-import { Wallet as EthersWallet } from 'ethers'
-
 import { SafeService } from './safe.service'
 import { ServiceResponse } from '../core/service-response.'
 import { accountService } from '../core/services'

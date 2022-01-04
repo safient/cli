@@ -66,7 +66,7 @@ export class Wallet {
 
     // generate(account.address, { small: true });
 
-    console.log(info('Retriving account information'))
+    console.log(info('Retrieving account information'))
     console.log(info('‍📬 Your wallet address '), account.address)
 
     let provider

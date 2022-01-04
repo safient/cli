@@ -49,6 +49,6 @@ export const createServer = async (port: number, hostname: string): Promise<Serv
   })
 }
 
-export const closeServer = () => {
+export const closeServer = (): void => {
   // Close the express server, gracefully
 }

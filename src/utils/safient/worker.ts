@@ -77,7 +77,7 @@ export class Worker {
     return conf
   }
 
-  async watchSafes() {
+  async watchSafes(): Promise<void> {
     if (!fs.existsSync('safe.json')) {
       fs.writeFileSync('safe.json', JSON.stringify({}))
     }
@@ -87,7 +87,7 @@ export class Worker {
     for (;;) {
       // Poll safe details for every 5 seconds
       await delay(5000)
-      const watchedSafes = JSON.parse(fs.readFileSync('safe.json').toString())
+      let watchedSafes = JSON.parse(fs.readFileSync('safe.json').toString())
       const user = await accountService.get(accountService.user.did)
       const safes = user.hasData() ? user.data!.safes : accountService.user.safes
       const guardableSafes: SafeMeta[] = safes.filter(
@@ -99,30 +99,46 @@ export class Worker {
           info(
             `${
               guardableSafes.length - Object.keys(watchedSafes).length
-            } new safes detected for the guardian`,
+            } new safe(s) detected for the guardian 🔐`,
           ),
         )
+
+        // Mark the fetched safes as watched
+        watchedSafes = {
+          ...guardableSafes.reduce(
+            (prev, safe: SafeMeta) => ({
+              ...prev,
+              [safe.safeId]: { reconstructed: false },
+            }),
+            {},
+          ),
+          ...watchedSafes,
+        }
       }
 
+      // Fetch safe data
       const safe: Promise<(Safe | undefined)[]> = Promise.all(
-        guardableSafes.map(safe =>
-          safeService.get(safe.safeId).then(safe => {
+        Object.keys(watchedSafes).map(safe =>
+          safeService.get(safe).then(safe => {
             if (safe.hasData()) return safe.data
           }),
         ),
       )
       const safeData = await safe
 
-      //   // Fetch the recoverable safes by the guardian by comparing local and remote data base
+      // Fetch the recoverable safes by the guardian by comparing local and remote data base
       const recoverableSafes = safeData
-        .filter(safe => safe?.stage == SafeStage.RECOVERING && !watchedSafes[safe._id])
+        .filter(
+          safe =>
+            safe?.stage == SafeStage.RECOVERING && !watchedSafes[safe._id].reconstructed,
+        )
         .map(safe => safe?._id)
       if (recoverableSafes.length) {
-        console.log(info(`🔐 ${recoverableSafes.length} new recoverable safe found `))
+        console.log(info(` ${recoverableSafes.length} new recoverable safe found 💂`))
       }
 
-      //   // Reconstruct the recoverableSafes
-      //   // Update the local safe info once done
+      //  Reconstruct the recoverableSafes
+      //  Update the local safe info once done
       const updatedSafeStates = {}
       for (let i = 0; i < recoverableSafes.length; i++) {
         const safe = recoverableSafes[i]
@@ -132,13 +148,13 @@ export class Worker {
           if (status.hasData()) {
             console.log(success(`Safe ${safe} recovered`))
           }
-          updatedSafeStates[safe] = status
+          updatedSafeStates[safe] = { reconstructed: status.data }
         }
       }
 
       fs.writeFileSync(
         'safe.json',
-        JSON.stringify({ ...updatedSafeStates, ...watchedSafes }),
+        JSON.stringify({ ...watchedSafes, ...updatedSafeStates }),
       )
     }
   }

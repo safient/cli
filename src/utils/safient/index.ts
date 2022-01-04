@@ -1,12 +1,4 @@
-//TODO: Export the types used in @safient/core
-import delay from 'delay'
-import fs from 'fs'
-import { Request, Response } from 'express'
-
-import { Wallet as EthersWallet } from 'ethers'
-import { Types, Enums, SafientCore } from '@safient/core'
-
-import { CryptoSafe, SecretSafe, Network, Safe, SafeStore, SafeMeta } from '../../types'
+import { CryptoSafe, SecretSafe, Network, SafeStore, SafeMeta } from '../../types'
 import { accountService, safeService } from '../../services'
 
 import { success, info, error } from '../message'
@@ -29,7 +21,7 @@ export class Safient {
     return user.hasData() ? true : false
   }
 
-  myInfo(): any {
+  myInfo(): void {
     console.log(info('Connected user info: ' + accountService.user.did))
   }
 
