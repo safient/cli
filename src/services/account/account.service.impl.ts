@@ -47,8 +47,7 @@ export class AccountServiceImpl extends Service implements AccountService {
   async login(): Promise<ServiceResponse<User>> {
     try {
       const user = await this.safient.loginUser()
-      console.log(user)
-
+      
       if (user.data) {
         this.user = user.data
       }

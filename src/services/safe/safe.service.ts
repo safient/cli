@@ -10,5 +10,11 @@ export interface SafeService {
     onchain: boolean,
   ): Promise<ServiceResponse<string>>
 
+  claim(safeId: string): Promise<ServiceResponse<number>>
+
+  signal(safeId: string): Promise<ServiceResponse<boolean>>
+  
+  recover(safeId: string): Promise<ServiceResponse<any>>
+
   reconstruct(safeId: string): Promise<ServiceResponse<boolean>>
 }
