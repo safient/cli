@@ -11,7 +11,7 @@ const { DatabaseType, Network } = require('../dist/types')
 const { Wallet } = require('../dist/utils/wallet')
 
 
-describe('Scenario 1 - Creating safe offChain', async () => {
+describe('Scenario 1 - Auto safe reconstruction', async () => {
   
   let creator;
   let beneficiary;
@@ -88,7 +88,7 @@ it('Should register a beneficiary', async () => {
 
 
   //Step 3: Create a Signal based safe 
-  it('Should create safe with "Testing Safe data" as data offchain', async () => {
+  it('Should create a seed phrase based safe', async () => {
    
     
     const secretSafe = {

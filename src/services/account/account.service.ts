@@ -6,7 +6,7 @@ export interface AccountService {
 
   login(): Promise<ServiceResponse<User>>
 
-  create(name: string, email: string): Promise<ServiceResponse<User>>
+  create(name: string, email: string, guardian: boolean): Promise<ServiceResponse<User>>
 
   get(did: string): Promise<ServiceResponse<User>>
 }
