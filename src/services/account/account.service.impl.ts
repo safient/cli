@@ -47,6 +47,7 @@ export class AccountServiceImpl extends Service implements AccountService {
   async login(): Promise<ServiceResponse<User>> {
     try {
       const user = await this.safient.loginUser()
+      console.log(user)
 
       if (user.data) {
         this.user = user.data
@@ -68,10 +69,10 @@ export class AccountServiceImpl extends Service implements AccountService {
     }
   }
 
-  async create(name: string, email: string): Promise<ServiceResponse<User>> {
+  async create(name: string, email: string, guardian: boolean): Promise<ServiceResponse<User>> {
     try {
       const userAddress = await this.account.getAddress()
-      const user = await this.safient.createUser(name, email, 0, userAddress)
+      const user = await this.safient.createUser(name, email, 0, userAddress, guardian)
 
       if (user.data) {
         this.user = user.data

@@ -36,7 +36,7 @@ export class Safient {
       return false
     }
 
-    const user = await accountService.create(name, email)
+    const user = await accountService.create(name, email, false)
     if (user.hasError()) {
       console.log(error('Error while creating the new user : '))
       return false

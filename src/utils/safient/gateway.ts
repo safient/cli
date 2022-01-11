@@ -39,7 +39,7 @@ export class Gateway {
 
     // Connecting the user or creating a new one if doesn't already exist
     if (!opts.registed) {
-      await accountService.create(options.name, options.email)
+      await accountService.create(options.name, options.email, true)
     }
 
     // Initializing a server

@@ -40,7 +40,7 @@ export class Worker {
 
     // Connecting the user or creating a new one if doesn't already exist
     if (!opts.registed) {
-      await accountService.create(options.name, options.email)
+      await accountService.create(options.name, options.email, true)
       await accountService.login()
     }
 
@@ -147,6 +147,8 @@ export class Worker {
           const status = await safeService.reconstruct(safe)
           if (status.hasData()) {
             console.log(success(`Safe ${safe} recovered`))
+          } else {
+            console.log(success(`Safe ${safe} recovery falied`))
           }
           updatedSafeStates[safe] = { reconstructed: status.data }
         }
