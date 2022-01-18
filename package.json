@@ -34,7 +34,7 @@
   "dependencies": {
     "@awaitjs/express": "^0.8.0",
     "@ethersproject/providers": "^5.4.4",
-    "@safient/core": "^0.1.8-alpha",
+    "@safient/core": "file:../core-js/safient-core-js",
     "bip39": "^3.0.4",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",

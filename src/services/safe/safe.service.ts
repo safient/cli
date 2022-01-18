@@ -14,7 +14,7 @@ export interface SafeService {
 
   signal(safeId: string): Promise<ServiceResponse<boolean>>
   
-  recover(safeId: string): Promise<ServiceResponse<any>>
+  recover(safeId: string): Promise<ServiceResponse<string>>
 
   reconstruct(safeId: string): Promise<ServiceResponse<boolean>>
 }

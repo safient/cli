@@ -199,7 +199,6 @@ export async function cli(): Promise<void> {
     )
     .action(async (safeId, {network}) => {
       const safient = new Safient(parseInt(Network[network]))
-      console.log(safeId)
       await safient.connect()
       await safient.createClaim(safeId)
     })
@@ -211,7 +210,7 @@ export async function cli(): Promise<void> {
       '--network <name>',
       'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
     )
-    .action(async ({safeId, network}) => {
+    .action(async (safeId, {network}) => {
       const safient = new Safient(parseInt(Network[network]))
       await safient.connect()
       await safient.recover(safeId)

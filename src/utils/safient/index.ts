@@ -22,7 +22,7 @@ export class Safient {
   }
 
   myInfo(): void {
-    console.log(info('Connected user info: ' + accountService.user))
+    console.log(info('Connected user info: ' + JSON.stringify(accountService.user)))
   }
 
   async mySafes(): Promise<SafeMeta[]> {
@@ -107,9 +107,8 @@ export class Safient {
   }
 
   async recover(safeId: string): Promise<boolean> {
-    console.log(info('Creating Signal for safe:'), safeId)
+    console.log(info('Creating Recovery for safe:'), safeId)
     const result = await safeService.recover(safeId)
-
     if (result.hasError()) {
       console.log(error('Error while recovring a safe ' + result.error))
       return false

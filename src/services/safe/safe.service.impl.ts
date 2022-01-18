@@ -58,7 +58,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       const disputeId = await accountService.safient.createClaim(safeId, file, 'Claim evidence','Lorsem Text')
       return this.success<number>(disputeId.data!)
     } catch (e: any) {
-      throw this.error<Safe>(e.error)
+      return this.error<number>(e.error)
     }
   }
 
@@ -79,10 +79,10 @@ export class SafeServiceImpl extends Service implements SafeService {
 
 
   //Currently signal based claim
-  async recover(safeId: string): Promise<ServiceResponse<any>> {
+  async recover(safeId: string): Promise<ServiceResponse<string>> {
     try {
       const recoveredData = await accountService.safient.recoverSafeByBeneficiary(safeId, accountService.user.did)
-      return this.success<any>(recoveredData.data.data.data)
+      return this.success<string>(recoveredData.data.safe.data)
     } catch (e: any) {
       throw this.error<Safe>(e.error)
     }
