@@ -13,7 +13,7 @@ export interface SafeService {
   claim(safeId: string): Promise<ServiceResponse<number>>
 
   signal(safeId: string): Promise<ServiceResponse<boolean>>
-  
+
   recover(safeId: string): Promise<ServiceResponse<string>>
 
   reconstruct(safeId: string): Promise<ServiceResponse<boolean>>

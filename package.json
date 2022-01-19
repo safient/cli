@@ -34,7 +34,7 @@
   "dependencies": {
     "@awaitjs/express": "^0.8.0",
     "@ethersproject/providers": "^5.4.4",
-    "@safient/core": "file:../core-js/safient-core-js",
+    "@safient/core": "^0.1.9-alpha",
     "bip39": "^3.0.4",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
@@ -50,6 +50,7 @@
     "express": "4.17.1",
     "inquirer": "^8.2.0",
     "log-symbols": "^5.0.0",
+    "lodash": "^4.17.21",
     "mocha": "^9.1.3",
     "qrcode-terminal": "^0.12.0"
   },
@@ -58,6 +59,7 @@
     "@types/express": "4.17.8",
     "@types/inquirer": "^8.1.3",
     "@types/jest": "26.0.15",
+    "@types/lodash": "^4.14.172",
     "@types/supertest": "2.0.10",
     "@typescript-eslint/eslint-plugin": "4.6.0",
     "@typescript-eslint/parser": "4.6.0",

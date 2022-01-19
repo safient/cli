@@ -190,32 +190,31 @@ export async function cli(): Promise<void> {
       await safient.createSafe(beneficiary, data, onchain)
     })
 
-    safe
+  safe
     .command('claim <safeId>')
     .description('Claim a Safe')
     .option(
       '--network <name>',
       'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
     )
-    .action(async (safeId, {network}) => {
+    .action(async (safeId, { network }) => {
       const safient = new Safient(parseInt(Network[network]))
       await safient.connect()
       await safient.createClaim(safeId)
     })
 
-    safe
+  safe
     .command('recover <safeId>')
     .description('Recover a Safe')
     .option(
       '--network <name>',
       'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
     )
-    .action(async (safeId, {network}) => {
+    .action(async (safeId, { network }) => {
       const safient = new Safient(parseInt(Network[network]))
       await safient.connect()
       await safient.recover(safeId)
     })
-
 
   safe
     .command('update <safeId>')

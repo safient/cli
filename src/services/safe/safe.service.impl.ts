@@ -54,11 +54,16 @@ export class SafeServiceImpl extends Service implements SafeService {
     try {
       const file = {
         name: 'dummy.pdf',
-      };
-      const disputeId = await accountService.safient.createClaim(safeId, file, 'Claim evidence','Lorsem Text')
+      }
+      const disputeId = await accountService.safient.createClaim(
+        safeId,
+        file,
+        'Claim evidence',
+        'Lorsem Text',
+      )
       return this.success<number>(disputeId.data!)
     } catch (e: any) {
-      return this.error<number>(e.error)
+      return this.error<number>(e)
     }
   }
 
@@ -66,25 +71,27 @@ export class SafeServiceImpl extends Service implements SafeService {
     try {
       let status: boolean
       const txReceipt = await accountService.safient.createSignal(safeId)
-      if(txReceipt.data?.status === 1){
+      if (txReceipt.data?.status === 1) {
         status = true
-      }else{
+      } else {
         status = false
       }
       return this.success<boolean>(status)
     } catch (e: any) {
-      throw this.error<Safe>(e.error)
+      return this.error<boolean>(e)
     }
   }
-
 
   //Currently signal based claim
   async recover(safeId: string): Promise<ServiceResponse<string>> {
     try {
-      const recoveredData = await accountService.safient.recoverSafeByBeneficiary(safeId, accountService.user.did)
+      const recoveredData = await accountService.safient.recoverSafeByBeneficiary(
+        safeId,
+        accountService.user.did,
+      )
       return this.success<string>(recoveredData.data.safe.data)
     } catch (e: any) {
-      throw this.error<Safe>(e.error)
+      return this.error<string>(e)
     }
   }
 
@@ -97,7 +104,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       1
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
-      return this.error<boolean>(e.error)
+      return this.error<boolean>(e)
     }
   }
 }
