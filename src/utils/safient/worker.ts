@@ -83,12 +83,21 @@ export class Worker {
     }
 
     console.log(info('Guardian is watching for any safe updates 👀 ...'))
+    
 
     for (;;) {
       // Poll safe details for every 5 seconds
       await delay(5000)
+      try {
       let watchedSafes = JSON.parse(fs.readFileSync('safe.json').toString())
       const user = await accountService.get(accountService.user.did)
+      if(user.hasError()) {
+
+        //TODO: Catch this error gracefully in service layer
+        console.log(user.error)
+        await accountService.login()
+      }
+
       const safes = user.hasData() ? user.data!.safes : accountService.user.safes
       const guardableSafes: SafeMeta[] = safes.filter(
         (safe: SafeMeta) => safe.type == 'guardian',
@@ -159,5 +168,11 @@ export class Worker {
         JSON.stringify({ ...watchedSafes, ...updatedSafeStates }),
       )
     }
+  catch(e: any) {
+
+    console.log('Some went trong:', e.message)
+
+  }
+}
   }
 }

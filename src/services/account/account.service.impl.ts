@@ -54,7 +54,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(this.user)
     } catch (e: any) {
-      throw this.error<User>(e.error)
+      return this.error<User>(e.error)
     }
   }
 
@@ -64,7 +64,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(user.data as User)
     } catch (e: any) {
-      throw this.error<User>(e.error)
+      return this.error<User>(e.error)
     }
   }
 

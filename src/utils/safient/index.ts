@@ -1,4 +1,4 @@
-import { CryptoSafe, SecretSafe, Network, SafeStore, SafeMeta } from '../../types'
+import { Network, SafeMeta } from '../../types'
 import { accountService, safeService } from '../../services'
 
 import { success, info, error } from '../message'
