@@ -1,4 +1,4 @@
-import { CryptoSafe, SecretSafe, Network, SafeStore, SafeMeta } from '../../types'
+import { Network, SafeMeta } from '../../types'
 import { accountService, safeService } from '../../services'
 
 import { success, info, error } from '../message'
@@ -22,7 +22,7 @@ export class Safient {
   }
 
   myInfo(): void {
-    console.log(info('Connected user info: ' + accountService.user.did))
+    console.log(info('Connected user info: ' + JSON.stringify(accountService.user)))
   }
 
   async mySafes(): Promise<SafeMeta[]> {
@@ -46,32 +46,55 @@ export class Safient {
     return true
   }
 
-  async createSafe(beneficiary: string, data: string, onchain = false): Promise<boolean> {
+  async createSafe(beneficiary: string, data: string, onchain = true): Promise<boolean> {
     console.log(info('Creating a new safe'))
 
-    const secretSafe: SecretSafe = {
-      seedPhrase: data,
-      privateKey: null,
-      keyStore: null,
-    }
-    const cryptoSafe: CryptoSafe = {
-      data: secretSafe,
-    }
-    const safeData: SafeStore = {
-      safe: cryptoSafe,
-    }
-
-    const safe = await accountService.safient.createSafe(
-      accountService.user.did,
-      beneficiary,
-      safeData,
-      onchain,
-      0,
-      0,
-      0,
-    )
+    const safe = await safeService.create(beneficiary, data, onchain)
 
     console.log(success('Safe has been created with id 🔐 : '), safe.data)
+
+    return true
+  }
+
+  async createClaim(safeId: string): Promise<boolean> {
+    console.log(info('Creating claim for safe:'), safeId)
+    const claimId = await safeService.claim(safeId)
+
+    if (claimId.hasError()) {
+      console.log(error('Error while creaing safe: ' + claimId.getErrorMessage()))
+      return false
+    } else {
+      console.log(success('Claim ID 🔐: '), claimId.data)
+      return true
+    }
+  }
+
+  async createSignal(safeId: string): Promise<boolean> {
+    console.log(info('Creating Signal for safe:'), safeId)
+    const result = await safeService.signal(safeId)
+
+    if (result.hasError()) {
+      console.log(error('Error while signaling a safe: ' + result.getErrorMessage()))
+      return false
+    }
+    if (result.data === true) {
+      console.log(success('Signal Created 🏁'))
+      return true
+    } else {
+      console.log(error('Signal Could not be created'))
+      return false
+    }
+  }
+
+  async recover(safeId: string): Promise<boolean> {
+    console.log(info('Creating Recovery for safe:'), safeId)
+    const result = await safeService.recover(safeId)
+    console.log(result)
+    if (result.hasError()) {
+      console.log(error('Error while recovering a safe: ' + result.getErrorMessage()))
+      return false
+    }
+    console.log(success('Safe has been recovered: '), result)
 
     return true
   }
@@ -81,7 +104,7 @@ export class Safient {
     const safe = await safeService.get(safeId)
 
     if (safe.hasError()) {
-      console.log(error('Error while fetching safe ' + safe.error))
+      console.log(error('Error while fetching safe:'), safe.getErrorMessage())
       return false
     }
 

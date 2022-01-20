@@ -135,10 +135,10 @@ it('Should register a beneficiary', async () => {
     expect(disputeId.data).to.be.a('number');
   });
 
-  it('Should update the stage on threadDB', async () => {
-      const result = await beneficiarySc.syncStage(safeId)
-      expect(result.data).to.equal(true);
-  });
+  // it('Should update the stage on threadDB', async () => {
+  //     const result = await beneficiarySc.syncStage(safeId)
+  //     expect(result.data).to.equal(true);
+  // });
 
  
   //Step 5: Recover the safe
