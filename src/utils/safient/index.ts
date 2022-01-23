@@ -46,7 +46,7 @@ export class Safient {
     return true
   }
 
-  async createSafe(beneficiary: string, data: string, onchain = true): Promise<boolean> {
+  async createSafe(beneficiary: string, data: string, onchain = false): Promise<boolean> {
     console.log(info('Creating a new safe'))
 
     const safe = await safeService.create(beneficiary, data, onchain)
