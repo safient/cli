@@ -83,96 +83,92 @@ export class Worker {
     }
 
     console.log(info('Guardian is watching for any safe updates 👀 ...'))
-    
 
     for (;;) {
       // Poll safe details for every 5 seconds
       await delay(5000)
       try {
-      let watchedSafes = JSON.parse(fs.readFileSync('safe.json').toString())
-      const user = await accountService.get(accountService.user.did)
-      if(user.hasError()) {
-
-        //TODO: Catch this error gracefully in service layer
-        console.log(user.error)
-        await accountService.login()
-      }
-
-      const safes = user.hasData() ? user.data!.safes : accountService.user.safes
-      const guardableSafes: SafeMeta[] = safes.filter(
-        (safe: SafeMeta) => safe.type == 'guardian',
-      )
-
-      if (guardableSafes.length > Object.keys(watchedSafes).length) {
-        console.log(
-          info(
-            `${
-              guardableSafes.length - Object.keys(watchedSafes).length
-            } new safe(s) detected for the guardian 🔐`,
-          ),
-        )
-
-        // Mark the fetched safes as watched
-        watchedSafes = {
-          ...guardableSafes.reduce(
-            (prev, safe: SafeMeta) => ({
-              ...prev,
-              [safe.safeId]: { reconstructed: false },
-            }),
-            {},
-          ),
-          ...watchedSafes,
+        let watchedSafes = JSON.parse(fs.readFileSync('safe.json').toString())
+        const user = await accountService.get(accountService.user.did)
+        if (user.hasError()) {
+          //TODO: Catch this error gracefully in service layer
+          console.log(user.error)
+          await accountService.login()
         }
-      }
 
-      // Fetch safe data
-      const safe: Promise<(Safe | undefined)[]> = Promise.all(
-        Object.keys(watchedSafes).map(safe =>
-          safeService.get(safe).then(safe => {
-            if (safe.hasData()) return safe.data
-          }),
-        ),
-      )
-      const safeData = await safe
-
-      // Fetch the recoverable safes by the guardian by comparing local and remote data base
-      const recoverableSafes = safeData
-        .filter(
-          safe =>
-            safe?.stage == SafeStage.RECOVERING && !watchedSafes[safe._id].reconstructed,
+        const safes = user.hasData() ? user.data!.safes : accountService.user.safes
+        const guardableSafes: SafeMeta[] = safes.filter(
+          (safe: SafeMeta) => safe.type == 'guardian',
         )
-        .map(safe => safe?._id)
-      if (recoverableSafes.length) {
-        console.log(info(` ${recoverableSafes.length} new recoverable safe found 💂`))
-      }
 
-      //  Reconstruct the recoverableSafes
-      //  Update the local safe info once done
-      const updatedSafeStates = {}
-      for (let i = 0; i < recoverableSafes.length; i++) {
-        const safe = recoverableSafes[i]
-        if (safe) {
-          console.log(info(`🧑‍🔧 Recovering the safe: ${safe} ...`))
-          const status = await safeService.reconstruct(safe)
-          if (status.hasData()) {
-            console.log(success(`Safe ${safe} recovered`))
-          } else {
-            console.log(success(`Safe ${safe} recovery falied`))
+        if (guardableSafes.length > Object.keys(watchedSafes).length) {
+          console.log(
+            info(
+              `${
+                guardableSafes.length - Object.keys(watchedSafes).length
+              } new safe(s) detected for the guardian 🔐`,
+            ),
+          )
+
+          // Mark the fetched safes as watched
+          watchedSafes = {
+            ...guardableSafes.reduce(
+              (prev, safe: SafeMeta) => ({
+                ...prev,
+                [safe.safeId]: { reconstructed: false },
+              }),
+              {},
+            ),
+            ...watchedSafes,
           }
-          updatedSafeStates[safe] = { reconstructed: status.data }
         }
+
+        // Fetch safe data
+        const safe: Promise<(Safe | undefined)[]> = Promise.all(
+          Object.keys(watchedSafes).map(safe =>
+            safeService.get(safe).then(safe => {
+              if (safe.hasData()) return safe.data
+            }),
+          ),
+        )
+        const safeData = await safe
+
+        // Fetch the recoverable safes by the guardian by comparing local and remote data base
+        const recoverableSafes = safeData
+          .filter(
+            safe =>
+              safe?.stage == SafeStage.RECOVERING &&
+              !watchedSafes[safe._id].reconstructed,
+          )
+          .map(safe => safe?._id)
+        if (recoverableSafes.length) {
+          console.log(info(` ${recoverableSafes.length} new recoverable safe found 💂`))
+        }
+
+        //  Reconstruct the recoverableSafes
+        //  Update the local safe info once done
+        const updatedSafeStates = {}
+        for (let i = 0; i < recoverableSafes.length; i++) {
+          const safe = recoverableSafes[i]
+          if (safe) {
+            console.log(info(`🧑‍🔧 Recovering the safe: ${safe} ...`))
+            const status = await safeService.reconstruct(safe)
+            if (status.hasData()) {
+              console.log(success(`Safe ${safe} recovered`))
+            } else {
+              console.log(success(`Safe ${safe} recovery falied`))
+            }
+            updatedSafeStates[safe] = { reconstructed: status.data }
+          }
+        }
+
+        fs.writeFileSync(
+          'safe.json',
+          JSON.stringify({ ...watchedSafes, ...updatedSafeStates }),
+        )
+      } catch (e: any) {
+        console.log('Some went trong:', e.message)
       }
-
-      fs.writeFileSync(
-        'safe.json',
-        JSON.stringify({ ...watchedSafes, ...updatedSafeStates }),
-      )
     }
-  catch(e: any) {
-
-    console.log('Some went trong:', e.message)
-
-  }
-}
   }
 }
