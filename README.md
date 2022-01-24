@@ -26,10 +26,10 @@ Create a new user:
 ```
 
 
-Create a new safe:
+Create a new safe (Creator):
 
 ```
-  safient safe create --beneficiary did:key:z6MknvaZuK44SWdsK8m6t3mq7AWQ2Hj1zGhVTPywcPGS7qFf --data 'Test safe' --network testnet
+  safient safe create --beneficiary did:key:z6MknvaZuK44SWdsK8m6t3mq7AWQ2Hj1zGhVTPywcPGS7qFf --data 'GM' --network testnet
 
 ```
 
@@ -37,6 +37,20 @@ Show a safe:
 
 ```
   safient safe show 01fgbz287dvds1ft1e4tdbjqkp --network testnet
+
+```
+
+Claim a safe (Beneficiary):
+
+```
+  safient safe claim 01fgbz287dvds1ft1e4tdbjqkp --network testnet
+
+```
+
+Recover the safe (Beneficiary):
+
+```
+  safient safe recover 01fgbz287dvds1ft1e4tdbjqkp --network testnet
 
 ```
 

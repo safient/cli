@@ -1,6 +1,6 @@
 {
   "name": "@safient/cli",
-  "version": "0.1.3-alpha",
+  "version": "0.1.4-alpha",
   "description": "Safient CLI tool to run a Safien worker and interact with the safes on Safient protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
