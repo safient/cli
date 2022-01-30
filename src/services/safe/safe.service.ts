@@ -17,4 +17,6 @@ export interface SafeService {
   recover(safeId: string): Promise<ServiceResponse<string>>
 
   reconstruct(safeId: string): Promise<ServiceResponse<boolean>>
+
+  submitProof(safeId: string): Promise<ServiceResponse<boolean>>
 }

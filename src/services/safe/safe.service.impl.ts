@@ -101,6 +101,27 @@ export class SafeServiceImpl extends Service implements SafeService {
         safeId,
         accountService.user.did,
       )
+      return this.success<boolean>(reconstruct.data as boolean)
+    } catch (e: any) {
+      return this.error<boolean>(e)
+    }
+  }
+
+  async submitProof(safeId: string): Promise<ServiceResponse<boolean>> {
+    try {
+      const reconstruct = await accountService.safient.incentiviseGuardians(safeId)
+      return this.success<boolean>(reconstruct.data as boolean)
+    } catch (e: any) {
+      return this.error<boolean>(e)
+    }
+  }
+
+  async claimReward(safeId: string): Promise<ServiceResponse<boolean>> {
+    try {
+      const reconstruct = await accountService.safient.reconstructSafe(
+        safeId,
+        accountService.user.did,
+      )
       1
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
