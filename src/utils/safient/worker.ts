@@ -155,7 +155,6 @@ export class Worker {
             const status = await safeService.reconstruct(safe)
             if (status.hasData()) {
               const proofStatus = await safeService.submitProof(safe);
-              console.log(proofStatus)
               if(proofStatus.data){
                 console.log(success(`Safe ${safe} recovered and recovery proof submitted`))
               }else{
