@@ -1,4 +1,4 @@
-import { ServiceResponse } from './service-response.'
+import { ServiceResponse } from './service-response'
 
 export abstract class Service {
   protected success<T>(data: T): ServiceResponse<T> {

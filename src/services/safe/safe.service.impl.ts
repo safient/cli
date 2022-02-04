@@ -1,5 +1,5 @@
 import { SafeService } from './safe.service'
-import { ServiceResponse } from '../core/service-response.'
+import { ServiceResponse } from '../core/service-response'
 import { accountService } from '../core/services'
 import { Service } from '../core/service'
 import { CryptoSafe, SecretSafe, Safe, SafeStore } from '../../types'

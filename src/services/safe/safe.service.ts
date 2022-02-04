@@ -1,4 +1,4 @@
-import { ServiceResponse } from '../core/service-response.'
+import { ServiceResponse } from '../core/service-response'
 import { Safe } from '../../types'
 
 export interface SafeService {
