@@ -1,9 +1,9 @@
 import delay from 'delay'
 import fs from 'fs'
 
-import { Safe, Network, WorkerOptions, SafeStage, SafeMeta } from '../../types'
+import { Safe, Network, WorkerOptions, SafeStage, SafeMeta, Error } from '../../types'
 import { accountService, safeService } from '../../services'
-import { info, success } from '../message'
+import { error, info, success, warning } from '../message'
 
 const DEFAULT_CONFIG = {
   name: '',
@@ -92,7 +92,6 @@ export class Worker {
         const user = await accountService.get(accountService.user.did)
         if (user.hasError()) {
           //TODO: Catch this error gracefully in service layer
-          console.log(user.error)
           await accountService.login()
         }
 
@@ -115,7 +114,7 @@ export class Worker {
             ...guardableSafes.reduce(
               (prev, safe: SafeMeta) => ({
                 ...prev,
-                [safe.safeId]: { reconstructed: false },
+                [safe.safeId]: { reconstructed: false, incentivized: false },
               }),
               {},
             ),
@@ -145,6 +144,20 @@ export class Worker {
           console.log(info(` ${recoverableSafes.length} new recoverable safe found 💂`))
         }
 
+        // Fetch the incentivizable safes by the guardian by comparing local and remote data base
+        const incentivizableSafes = safeData
+          .filter(
+            safe =>
+              safe?.stage == (SafeStage.CLAIMED || SafeStage.RECOVERED) &&
+              !watchedSafes[safe._id].incentivized,
+          )
+          .map(safe => safe?._id)
+        if (incentivizableSafes.length) {
+          console.log(
+            info(` ${incentivizableSafes.length} new incentivizable safe found 💂`),
+          )
+        }
+
         //  Reconstruct the recoverableSafes
         //  Update the local safe info once done
         const updatedSafeStates = {}
@@ -155,10 +168,30 @@ export class Worker {
             const status = await safeService.reconstruct(safe)
             if (status.hasData()) {
               console.log(success(`Safe ${safe} recovered`))
+              updatedSafeStates[safe] = { reconstructed: true, incentivized: false }
             } else {
-              console.log(success(`Safe ${safe} recovery falied`))
+              console.log(error(`Safe ${safe} recovery falied`))
             }
-            updatedSafeStates[safe] = { reconstructed: status.data }
+          }
+        }
+
+        //  Incentivize the guardians
+        //  Update the local safe info once done
+        for (let i = 0; i < incentivizableSafes.length; i++) {
+          const safe = incentivizableSafes[i]
+          if (safe) {
+            console.log(info(`🧑‍🔧 Incentivizing the safe: ${safe} ...`))
+
+            const status = await safeService.submitProof(safe)
+            if (status.hasData()) {
+              console.log(success(`Safe ${safe} recovery proof submitted`))
+              updatedSafeStates[safe] = { reconstructed: true, incentivized: true }
+            } else if (status.getErrorCode() == Error.IncentivizationComplete.code) {
+              console.log(warning(`Safe ${safe} recovery proof already submitted`))
+              updatedSafeStates[safe] = { reconstructed: true, incentivized: true }
+            } else {
+              console.log(error(`Safe ${safe} incentivization falied`))
+            }
           }
         }
 
@@ -167,7 +200,7 @@ export class Worker {
           JSON.stringify({ ...watchedSafes, ...updatedSafeStates }),
         )
       } catch (e: any) {
-        console.log('Some went trong:', e.message)
+        console.log('Something went wrong:', e.message)
       }
     }
   }

@@ -25,4 +25,8 @@ export class ServiceResponse<T> {
       _.get(this.error, 'error.message', 'Something went wrong'),
     )
   }
+
+  getErrorCode(): number {
+    return _.get(this.error, 'error.code', 0)
+  }
 }

@@ -1,7 +1,7 @@
 import { Wallet as EthersWallet } from 'ethers'
 
 import { AccountService } from './account.service'
-import { ServiceResponse } from '../core/service-response.'
+import { ServiceResponse } from '../core/service-response'
 import { Service } from '../core/service'
 import { Wallet } from '../../utils/wallet'
 import { SafientCore } from '@safient/core'

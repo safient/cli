@@ -1,4 +1,4 @@
-import { ServiceResponse } from '../core/service-response.'
+import { ServiceResponse } from '../core/service-response'
 import { Safe } from '../../types'
 
 export interface SafeService {
@@ -17,4 +17,6 @@ export interface SafeService {
   recover(safeId: string): Promise<ServiceResponse<string>>
 
   reconstruct(safeId: string): Promise<ServiceResponse<boolean>>
+
+  submitProof(safeId: string): Promise<ServiceResponse<boolean>>
 }

@@ -1,4 +1,4 @@
-import { Types, Enums } from '@safient/core'
+import { Types, Enums, Errors } from '@safient/core'
 
 export enum Network {
   mainnet = Enums.NetworkType.mainnet,
@@ -48,3 +48,5 @@ export type SecretSafe = Types.SecretSafe
 export type CryptoSafe = Types.CryptoSafe
 
 export type SafeStore = Types.SafeStore
+
+export const Error = Errors.Errors

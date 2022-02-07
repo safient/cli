@@ -1,5 +1,5 @@
 import { SafeService } from './safe.service'
-import { ServiceResponse } from '../core/service-response.'
+import { ServiceResponse } from '../core/service-response'
 import { accountService } from '../core/services'
 import { Service } from '../core/service'
 import { CryptoSafe, SecretSafe, Safe, SafeStore } from '../../types'
@@ -96,6 +96,27 @@ export class SafeServiceImpl extends Service implements SafeService {
   }
 
   async reconstruct(safeId: string): Promise<ServiceResponse<boolean>> {
+    try {
+      const reconstruct = await accountService.safient.reconstructSafe(
+        safeId,
+        accountService.user.did,
+      )
+      return this.success<boolean>(reconstruct.data as boolean)
+    } catch (e: any) {
+      return this.error<boolean>(e)
+    }
+  }
+
+  async submitProof(safeId: string): Promise<ServiceResponse<boolean>> {
+    try {
+      const reconstruct = await accountService.safient.incentiviseGuardians(safeId)
+      return this.success<boolean>(reconstruct.data as boolean)
+    } catch (e: any) {
+      return this.error<boolean>(e)
+    }
+  }
+
+  async claimReward(safeId: string): Promise<ServiceResponse<boolean>> {
     try {
       const reconstruct = await accountService.safient.reconstructSafe(
         safeId,
