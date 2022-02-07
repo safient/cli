@@ -3,7 +3,7 @@ import fs from 'fs'
 
 import { Safe, Network, WorkerOptions, SafeStage, SafeMeta, Error } from '../../types'
 import { accountService, safeService } from '../../services'
-import { error, info, success } from '../message'
+import { error, info, success, warning } from '../message'
 
 const DEFAULT_CONFIG = {
   name: '',
@@ -114,7 +114,7 @@ export class Worker {
             ...guardableSafes.reduce(
               (prev, safe: SafeMeta) => ({
                 ...prev,
-                [safe.safeId]: { reconstructed: false },
+                [safe.safeId]: { reconstructed: false, incentivized: false },
               }),
               {},
             ),
@@ -144,17 +144,18 @@ export class Worker {
           console.log(info(` ${recoverableSafes.length} new recoverable safe found 💂`))
         }
 
-
         // Fetch the incentivizable safes by the guardian by comparing local and remote data base
         const incentivizableSafes = safeData
           .filter(
             safe =>
-              safe?.stage == SafeStage.RECOVERED &&
+              safe?.stage == (SafeStage.CLAIMED || SafeStage.RECOVERED) &&
               !watchedSafes[safe._id].incentivized,
           )
           .map(safe => safe?._id)
         if (incentivizableSafes.length) {
-          console.log(info(` ${incentivizableSafes.length} new incentivizable safe found 💂`))
+          console.log(
+            info(` ${incentivizableSafes.length} new incentivizable safe found 💂`),
+          )
         }
 
         //  Reconstruct the recoverableSafes
@@ -167,11 +168,10 @@ export class Worker {
             const status = await safeService.reconstruct(safe)
             if (status.hasData()) {
               console.log(success(`Safe ${safe} recovered`))
-              updatedSafeStates[safe] = { reconstructed: true }
+              updatedSafeStates[safe] = { reconstructed: true, incentivized: false }
             } else {
-              console.log(success(`Safe ${safe} recovery falied`))
+              console.log(error(`Safe ${safe} recovery falied`))
             }
-            
           }
         }
 
@@ -181,17 +181,16 @@ export class Worker {
           const safe = incentivizableSafes[i]
           if (safe) {
             console.log(info(`🧑‍🔧 Incentivizing the safe: ${safe} ...`))
-            
+
             const status = await safeService.submitProof(safe)
             if (status.hasData()) {
-              console.log(
-                success(`Safe ${safe} recovery proof submitted`),
-              )
-              updatedSafeStates[safe] = { incentivized: true }
-            }
-            else if(status.getErrorCode() == Error.IncentivizationComplete.code) {
-              console.log(error(`Safe ${safe} recovery proof already submitted`))
-              updatedSafeStates[safe] = { incentivized: true }
+              console.log(success(`Safe ${safe} recovery proof submitted`))
+              updatedSafeStates[safe] = { reconstructed: true, incentivized: true }
+            } else if (status.getErrorCode() == Error.IncentivizationComplete.code) {
+              console.log(warning(`Safe ${safe} recovery proof already submitted`))
+              updatedSafeStates[safe] = { reconstructed: true, incentivized: true }
+            } else {
+              console.log(error(`Safe ${safe} incentivization falied`))
             }
           }
         }

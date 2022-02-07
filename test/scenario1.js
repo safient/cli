@@ -149,7 +149,6 @@ it('Should register a beneficiary', async () => {
     // beneficiarySc = new SafientCore(creatorSigner, Network.devnet, DatabaseType.threadDB, apiKey, secret);
     for(;safeData.data.stage!=3;) {
     safeData = await beneficiarySc.getSafe(safeId)
-    console.log(safeData)
     }
     const data = await beneficiarySc.recoverSafeByBeneficiary(safeId, beneficiary.data.did)
     expect(data.data.data.data.seedPhrase).to.equal(

@@ -26,10 +26,7 @@ export class ServiceResponse<T> {
     )
   }
 
-  getErrorCode(): number { 
-    return _.get(
-      this.error,
-      'error.code',
-      0)
+  getErrorCode(): number {
+    return _.get(this.error, 'error.code', 0)
   }
 }

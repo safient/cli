@@ -5,6 +5,7 @@ import { Network } from './types'
 import { Gateway } from './utils/safient/gateway'
 import { Worker } from './utils/safient/worker'
 import { Safient } from './utils/safient'
+import { error } from './utils/message'
 
 export async function cli(): Promise<void> {
   const program = new Command()
@@ -167,8 +168,15 @@ export async function cli(): Promise<void> {
     )
     .action(async ({ network }) => {
       const safient = new Safient(parseInt(Network[network]))
-      await safient.connect()
-      await safient.myInfo()
+      const user  = await safient.connect()
+      if(user){
+        safient.myInfo()
+      }
+      else {
+        console.log(error("User doesn't exist"))
+      }
+       
+      
     })
 
   const safe = program.command('safe')
