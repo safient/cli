@@ -3,7 +3,10 @@ import { ServiceResponse } from '../core/service-response'
 import { accountService } from '../core/services'
 import { Service } from '../core/service'
 import { CryptoSafe, SecretSafe, Safe, SafeStore } from '../../types'
-import { sendClaimNofitication, sendSignalNotification } from '../../utils/notification/notification'
+import {
+  sendClaimNofitication,
+  sendSignalNotification,
+} from '../../utils/notification/notification'
 
 export class SafeServiceImpl extends Service implements SafeService {
   async create(
@@ -62,9 +65,18 @@ export class SafeServiceImpl extends Service implements SafeService {
         'Claim evidence',
         'Lorsem Text',
       )
-      if(disputeId){
-        const res = await sendClaimNofitication("koshik@consensolabs.com", safeId, "didofcreator", disputeId.toString())
-      }
+
+      //TODO: Send the notification to the safe owner
+
+      // if (disputeId) {
+      //   const res = await sendClaimNofitication(
+      //     'koshik@consensolabs.com',
+      //     safeId,
+      //     'didofcreator',
+      //     disputeId.toString(),
+      //   )
+      // }
+      
       return this.success<number>(disputeId.data!)
     } catch (e: any) {
       return this.error<number>(e)
@@ -93,7 +105,6 @@ export class SafeServiceImpl extends Service implements SafeService {
         safeId,
         accountService.user.did,
       )
-      const res = await sendSignalNotification("yathish@consensolabs.com", safeId, "did", undefined)
       return this.success<string>(recoveredData.data.safe.data)
     } catch (e: any) {
       return this.error<string>(e)

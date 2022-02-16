@@ -31,13 +31,22 @@ export type GatewayOptions = {
   verbose: boolean
 }
 
-export type TriggerParameters = {
-  $user_id: string,
+export type EmailTriggerParameters = {
+  $user_id: string
   $email: string
-  safeId?: string | undefined,
-  claimId?: string | undefined,
-  firstName?: string,
-  lastName?: string,
+  safeId?: string | undefined
+  claimId?: string | undefined
+  firstName?: string
+  lastName?: string
+}
+
+export type SMSTriggerParameters = {
+  $user_id: string
+  $phone: string
+  safeId?: string | undefined
+  claimId?: string | undefined
+  firstName?: string
+  lastName?: string
 }
 
 export type User = Types.User

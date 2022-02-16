@@ -168,15 +168,12 @@ export async function cli(): Promise<void> {
     )
     .action(async ({ network }) => {
       const safient = new Safient(parseInt(Network[network]))
-      const user  = await safient.connect()
-      if(user){
+      const user = await safient.connect()
+      if (user) {
         safient.myInfo()
-      }
-      else {
+      } else {
         console.log(error("User doesn't exist"))
       }
-       
-      
     })
 
   const safe = program.command('safe')
