@@ -31,6 +31,15 @@ export type GatewayOptions = {
   verbose: boolean
 }
 
+export type TriggerParameters = {
+  $user_id: string,
+  $email: string
+  safeId?: string | undefined,
+  claimId?: string | undefined,
+  firstName?: string,
+  lastName?: string,
+}
+
 export type User = Types.User
 
 export type Safe = Types.Safe
