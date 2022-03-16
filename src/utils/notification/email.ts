@@ -1,22 +1,20 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Notifire, ChannelTypeEnum } from '@notifire/core'
 import { SESEmailProvider } from '@notifire/ses'
-import { TriggerParameters } from '../../types'
-import dotenv from 'dotenv';
-dotenv.config();
+import { EmailTriggerParameters } from '../../types'
+import { error } from '../message'
 const notifire = new Notifire()
 
 export const sendEmail = async (
   id: string,
   subject: string,
   template: string,
-  triggerParamater: TriggerParameters,
+  triggerParamater: EmailTriggerParameters,
 ): Promise<boolean> => {
   try {
-    console.log(process.env)
     await notifire.registerProvider(
       new SESEmailProvider({
-        region: 'ap-south-1',
+        region: process.env.SES_REGION!,
         accessKeyId: process.env.ACCESS_KEY!,
         secretAccessKey: process.env.ACCESS_SECRET!,
         from: 'hello@safient.io',
@@ -38,6 +36,7 @@ export const sendEmail = async (
 
     return true
   } catch (err) {
-    throw new Error(`Something went wrong while messaging, ${err}`)
+    console.log(error(`Error while sending email: ${err}`))
+    throw new Error(`Error while sending email`)
   }
 }

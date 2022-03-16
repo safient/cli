@@ -41,7 +41,7 @@ export class SafeServiceImpl extends Service implements SafeService {
         0,
         0,
         0,
-        { did: beneficiary },
+        { email: beneficiary },
       )
 
       return this.success<string>(safe.data?.id as string)
@@ -77,6 +77,7 @@ export class SafeServiceImpl extends Service implements SafeService {
         disputeId = parseInt(response.data.id)
         await sendClaimNofitication(
           response.data.recepient.email,
+          '',
           safeId,
           response.data?.id,
         )

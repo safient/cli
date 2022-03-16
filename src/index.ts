@@ -184,7 +184,7 @@ export async function cli(): Promise<void> {
     .description('Create a safe')
     .requiredOption('--safename <string>', 'Name of the Safe')
     .requiredOption('--description <string>', 'Safe Description')
-    .requiredOption('--beneficiary <string>', 'DID/ Email of the Beneficiary')
+    .requiredOption('--beneficiary <string>', 'Email of the Beneficiary')
     .requiredOption('--data <string>', 'Safe data')
     .option(
       '--network <name>',

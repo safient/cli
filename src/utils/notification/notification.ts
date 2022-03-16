@@ -1,30 +1,43 @@
-import { TriggerParameters } from '../../types'
-import { sendEmail } from './emailNotify'
+import { EmailTriggerParameters, SMSTriggerParameters } from '../../types'
+import { error } from '../message'
+import { sendEmail } from './email'
+import { sendMsg } from './sms'
 import { emailTemplate } from './template/email'
+import { smsTemplate } from './template/sms'
 
 export const sendClaimNofitication = async (
   emailId: string,
+  phone: string,
   safeId: string,
   claimId?: string,
 ): Promise<boolean> => {
   try {
-    const triggerParamater: TriggerParameters = {
+    const emailTriggerParamater: EmailTriggerParameters = {
       $user_id: emailId,
       $email: emailId,
       safeId: safeId,
       claimId: claimId,
     }
-    console.log(emailId, safeId, claimId)
-    const res = await sendEmail(
+    const smsTriggerParamater: SMSTriggerParameters = {
+      $user_id: emailId,
+      $phone: phone,
+      safeId: safeId,
+      claimId: claimId,
+    }
+    await sendEmail(
       emailTemplate.claim.id,
       emailTemplate.claim.subject,
       emailTemplate.claim.data,
-      triggerParamater,
+      emailTriggerParamater,
     )
+    if(phone){
+      await sendMsg(smsTemplate.claim.id, smsTemplate.claim.data, smsTriggerParamater)
+    }
 
     return true
   } catch (e) {
-    throw new Error(`Something went wrong while sending mail, ${e}`)
+    console.log(error(`Error while sending claim notification`))
+    return false
   }
 }
 
@@ -35,7 +48,7 @@ export const sendSignalNotification = async (
   claimId?: string,
 ): Promise<boolean> => {
   try {
-    const triggerParamater: TriggerParameters = {
+    const triggerParamater: EmailTriggerParameters = {
       $user_id: did,
       $email: emailId,
       safeId: safeId,
@@ -50,6 +63,6 @@ export const sendSignalNotification = async (
 
     return true
   } catch (e) {
-    throw new Error(`Somethinbg went wrong while sending mail, ${e}`)
+    throw new Error(`Something went wrong while sending mail, ${e}`)
   }
 }
