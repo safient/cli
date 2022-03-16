@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import type { Server } from 'http'
 import { accountService, safeService } from '../../services'
+import { sendClaimNofitication } from '../notification/notification'
+import bodyParser from 'body-parser'
 
 export const createApp = async (): Promise<express.Express> => {
   const app = addAsync(express())
@@ -10,6 +12,7 @@ export const createApp = async (): Promise<express.Express> => {
   const baseRouter = Router()
   app.set('trust proxy', true)
   app.use(express.json({ limit: '1mb' }))
+  app.use(bodyParser.urlencoded({ extended: false }))
 
   // Log requests to the logger stream
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +34,16 @@ export const createApp = async (): Promise<express.Express> => {
   app.getAsync('/safe', async (req, resp) => {
     const safeId: string = req.query.id ? req.query.id.toString() : ''
     resp.json(await safeService.get(safeId))
+  })
+
+  app.postAsync('/notify/claim', async (req, resp) => {
+    const emailId: string = req.body.emailId ? req.body.emailId.toString() : ''
+    const phone: string = req.body.phone ? req.body.phone.toString() : ''
+    const claimId: string = req.body.claimId ? req.body.claimId.toString() : ''
+    const safeId: string = req.body.safeId ? req.body.safeId.toString() : ''
+    console.log(emailId, phone, claimId, safeId)
+    const res = await sendClaimNofitication(emailId, phone, safeId, claimId)
+    resp.json({ status: res })
   })
 
   // Endpoint for version

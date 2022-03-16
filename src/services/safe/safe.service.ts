@@ -5,6 +5,8 @@ export interface SafeService {
   get(safeId: string): Promise<ServiceResponse<Safe>>
 
   create(
+    safeName: string,
+    safeDescription: string,
     beneficiary: string,
     data: string,
     onchain: boolean,

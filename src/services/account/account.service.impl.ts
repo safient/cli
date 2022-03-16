@@ -76,7 +76,6 @@ export class AccountServiceImpl extends Service implements AccountService {
     try {
       const userAddress = await this.account.getAddress()
       const user = await this.safient.createUser(name, email, 0, userAddress, guardian)
-
       if (user.data) {
         this.user = user.data
       }

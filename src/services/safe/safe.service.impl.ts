@@ -1,11 +1,20 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { SafeService } from './safe.service'
 import { ServiceResponse } from '../core/service-response'
 import { accountService } from '../core/services'
 import { Service } from '../core/service'
 import { CryptoSafe, SecretSafe, Safe, SafeStore } from '../../types'
+import {
+  sendClaimNofitication,
+  sendSignalNotification,
+} from '../../utils/notification/notification'
+import { SafientResponse } from '@safient/core/dist/lib/services'
+import { EventResponse } from '@safient/core/dist/lib/types'
 
 export class SafeServiceImpl extends Service implements SafeService {
   async create(
+    safeName: string,
+    safeDescription: string,
     beneficiary: string,
     data: string,
     onchain: boolean,
@@ -24,16 +33,18 @@ export class SafeServiceImpl extends Service implements SafeService {
       }
 
       const safe = await accountService.safient.createSafe(
+        safeName,
+        safeDescription,
         accountService.user.did,
-        beneficiary,
         safeData,
         onchain,
         0,
         0,
         0,
+        { email: beneficiary },
       )
 
-      return this.success<string>(safe.data as string)
+      return this.success<string>(safe.data?.id as string)
     } catch (e: any) {
       return this.error<string>(e.error)
     }
@@ -55,13 +66,23 @@ export class SafeServiceImpl extends Service implements SafeService {
       const file = {
         name: 'dummy.pdf',
       }
-      const disputeId = await accountService.safient.createClaim(
+      let disputeId: number = 0
+      const response: SafientResponse<EventResponse> = await accountService.safient.createClaim(
         safeId,
         file,
         'Claim evidence',
         'Lorsem Text',
       )
-      return this.success<number>(disputeId.data!)
+      if (response.data?.id) {
+        disputeId = parseInt(response.data.id)
+        await sendClaimNofitication(
+          response.data.recepient.email,
+          '',
+          safeId,
+          response.data?.id,
+        )
+      }
+      return this.success<number>(disputeId)
     } catch (e: any) {
       return this.error<number>(e)
     }

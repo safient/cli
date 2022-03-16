@@ -46,19 +46,19 @@ describe('Scenario 1 - Auto safe reconstruction', async () => {
       creator = await creatorSc.loginUser();
     }catch(err){
       if(err.error.code === Errors.Errors.UserNotFound.code){
-        creator = await creatorSc.createUser('User 1', 'user1@safient.com', 0, userAddress);
+        creator = await creatorSc.createUser('User 1', 'yathish.ramamurthy@gmail.com', 0, userAddress);
       }
     }
     
     try{
-      const result = await creatorSc.createUser('User 1', 'user1@safient.com', 0, userAddress);
+      const result = await creatorSc.createUser('User 1', 'yathish.ramamurthy@gmail.com', 0, userAddress);
     }catch(err){
       expect(err.error.code).to.equal(11);
     }
 
     const loginUser = await creatorSc.getUser({ did: creator.data.did });
     expect(loginUser.data.name).to.equal('User 1');
-    expect(loginUser.data.email).to.equal('user1@safient.com');
+    expect(loginUser.data.email).to.equal('yathish.ramamurthy@gmail.com');
 
 });
 
@@ -71,19 +71,19 @@ it('Should register a beneficiary', async () => {
     beneficiary = await beneficiarySc.loginUser();
   }catch(err){
     if(err.error.code === Errors.Errors.UserNotFound.code){
-      beneficiary = await beneficiarySc.createUser('User 2', 'user2@safient.com', 0, userAddress);
+      beneficiary = await beneficiarySc.createUser('User 2', '123yathish.r@gmail.com', 0, userAddress);
     }
   }
   
   try{
-    const result = await beneficiarySc.createUser('User 2', 'user2@safient.com', 0, userAddress);
+    const result = await beneficiarySc.createUser('User 2', '123yathish.r@gmail.com', 0, userAddress);
   }catch(err){
     expect(err.error.code).to.equal(11);
   }
 
   const loginUser = await beneficiarySc.getUser({ did: beneficiary.data.did });
   expect(loginUser.data.name).to.equal('User 2');
-  expect(loginUser.data.email).to.equal('user2@safient.com');
+  expect(loginUser.data.email).to.equal('123yathish.r@gmail.com');
 });
 
 
@@ -103,13 +103,15 @@ it('Should register a beneficiary', async () => {
       data: cryptoSafe,
     };
     const safe = await creatorSc.createSafe(
+      "Safe",
+      "Safe Description",
       creator.data.did,
-      beneficiary.data.did,
       safeData,
       true,
       ClaimType.SignalBased,
       4,
-      0
+      0,
+      {did:beneficiary.data.did}
     );
     safeId = safe.data;
     const safeResult = await creatorSc.getSafe(safeId);
@@ -125,7 +127,7 @@ it('Should register a beneficiary', async () => {
     }
 
     
-    disputeId = await beneficiarySc.createClaim(safeId, file, "Testing Evidence", "Lorsem Text")
+    disputeId = await beneficiarySc.createClaim(safeId, {}, "", "")
     const mineNewBlock = new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(provider.send('evm_mine'));
