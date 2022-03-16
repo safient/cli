@@ -36,14 +36,13 @@ export const createApp = async (): Promise<express.Express> => {
     resp.json(await safeService.get(safeId))
   })
 
-
-  app.postAsync('/notify/claim', async(req, resp) =>{
-    const emailId:string = req.body.emailId ? req.body.emailId.toString(): ''
-    const claimId: string = req.body.claimId ? req.body.claimId.toString(): ''
-    const safeId: string = req.body.safeId ? req.body.safeId.toString(): ''
-    const did: string = req.body.did ? req.body.did.toString(): ''
-    const res = await sendClaimNofitication(emailId, safeId, did, claimId)
-    resp.json({status: res})
+  app.postAsync('/notify/claim', async (req, resp) => {
+    const emailId: string = req.body.emailId ? req.body.emailId.toString() : ''
+    const claimId: string = req.body.claimId ? req.body.claimId.toString() : ''
+    const safeId: string = req.body.safeId ? req.body.safeId.toString() : ''
+    const did: string = req.body.did ? req.body.did.toString() : ''
+    const res = await sendClaimNofitication(emailId, safeId, claimId)
+    resp.json({ status: res })
   })
 
   // Endpoint for version

@@ -168,15 +168,12 @@ export async function cli(): Promise<void> {
     )
     .action(async ({ network }) => {
       const safient = new Safient(parseInt(Network[network]))
-      const user  = await safient.connect()
-      if(user){
+      const user = await safient.connect()
+      if (user) {
         safient.myInfo()
-      }
-      else {
+      } else {
         console.log(error("User doesn't exist"))
       }
-       
-      
     })
 
   const safe = program.command('safe')
@@ -185,6 +182,8 @@ export async function cli(): Promise<void> {
   safe
     .command('create')
     .description('Create a safe')
+    .requiredOption('--safename <string>', 'Name of the Safe')
+    .requiredOption('--description <string>', 'Safe Description')
     .requiredOption('--beneficiary <string>', 'DID/ Email of the Beneficiary')
     .requiredOption('--data <string>', 'Safe data')
     .option(
@@ -192,10 +191,10 @@ export async function cli(): Promise<void> {
       'Name of the Safient network. One of: "mainnet", "testnet", "local", Default is local"',
     )
     .option('--onchain', 'If the safe creation should happen onchain"')
-    .action(async ({ data, beneficiary, network, onchain }) => {
+    .action(async ({ data, safename, description, beneficiary, network, onchain }) => {
       const safient = new Safient(parseInt(Network[network]))
       await safient.connect()
-      await safient.createSafe(beneficiary, data, onchain)
+      await safient.createSafe(safename, description, beneficiary, data, onchain)
     })
 
   safe

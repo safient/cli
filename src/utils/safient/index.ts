@@ -38,7 +38,7 @@ export class Safient {
 
     const user = await accountService.create(name, email, false)
     if (user.hasError()) {
-      console.log(error('Error while creating the new user : '))
+      console.log(error(`Error while creating the new user : ${user.error?.message} `))
       return false
     }
 
@@ -46,10 +46,16 @@ export class Safient {
     return true
   }
 
-  async createSafe(beneficiary: string, data: string, onchain = false): Promise<boolean> {
+  async createSafe(
+    safeName: string,
+    safeDesc: string,
+    beneficiary: string,
+    data: string,
+    onchain = false,
+  ): Promise<boolean> {
     console.log(info('Creating a new safe'))
 
-    const safe = await safeService.create(beneficiary, data, onchain)
+    const safe = await safeService.create(safeName, safeDesc, beneficiary, data, onchain)
 
     console.log(success('Safe has been created with id 🔐 : '), safe.data)
 
@@ -61,7 +67,7 @@ export class Safient {
     const claimId = await safeService.claim(safeId)
 
     if (claimId.hasError()) {
-      console.log(error('Error while creaing safe: ' + claimId.getErrorMessage()))
+      console.log(error('Error while creating safe: ' + claimId.getErrorMessage()))
       return false
     } else {
       console.log(success('Claim ID 🔐: '), claimId.data)

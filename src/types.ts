@@ -32,12 +32,12 @@ export type GatewayOptions = {
 }
 
 export type TriggerParameters = {
-  $user_id: string,
+  $user_id: string
   $email: string
-  safeId?: string | undefined,
-  claimId?: string | undefined,
-  firstName?: string,
-  lastName?: string,
+  safeId?: string | undefined
+  claimId?: string | undefined
+  firstName?: string
+  lastName?: string
 }
 
 export type User = Types.User
