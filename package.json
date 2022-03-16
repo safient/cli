@@ -37,7 +37,7 @@
     "@notifire/core": "*",
     "@notifire/ses": "*",
     "@notifire/sns": "*",
-    "@safient/core": "file:../core-js/safient-core-js",
+    "@safient/core": "^0.1.14-alpha",
     "bip39": "^3.0.4",
     "body-parser": "^1.19.0",
     "chai": "^4.3.4",
