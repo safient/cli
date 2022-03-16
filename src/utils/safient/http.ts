@@ -41,7 +41,7 @@ export const createApp = async (): Promise<express.Express> => {
     const phone: string = req.body.phone ? req.body.phone.toString() : ''
     const claimId: string = req.body.claimId ? req.body.claimId.toString() : ''
     const safeId: string = req.body.safeId ? req.body.safeId.toString() : ''
-    const did: string = req.body.did ? req.body.did.toString() : ''
+    console.log(emailId, phone, claimId, safeId)
     const res = await sendClaimNofitication(emailId, phone, safeId, claimId)
     resp.json({ status: res })
   })
