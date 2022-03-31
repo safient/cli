@@ -10,6 +10,7 @@ import {
 } from '../../utils/notification/notification'
 import { SafientResponse } from '@safient/core/dist/lib/services'
 import { EventResponse } from '@safient/core/dist/lib/types'
+import { logger } from '../../utils/logger/logger'
 
 export class SafeServiceImpl extends Service implements SafeService {
   async create(
@@ -46,6 +47,7 @@ export class SafeServiceImpl extends Service implements SafeService {
 
       return this.success<string>(safe.data?.id as string)
     } catch (e: any) {
+      logger.error(e)
       return this.error<string>(e.error)
     }
   }
@@ -56,6 +58,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       1
       return this.success<Safe>(safe.data as Safe)
     } catch (e: any) {
+      logger.error(e)
       return this.error<Safe>(e.error)
     }
   }
@@ -84,6 +87,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       }
       return this.success<number>(disputeId)
     } catch (e: any) {
+      logger.error(e)
       return this.error<number>(e)
     }
   }
@@ -99,6 +103,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       }
       return this.success<boolean>(status)
     } catch (e: any) {
+      logger.error(e)
       return this.error<boolean>(e)
     }
   }
@@ -112,6 +117,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       )
       return this.success<string>(recoveredData.data.safe.data)
     } catch (e: any) {
+      logger.error(e)
       return this.error<string>(e)
     }
   }
@@ -124,6 +130,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       )
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
+      logger.error(e)
       return this.error<boolean>(e)
     }
   }
@@ -133,6 +140,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       const reconstruct = await accountService.safient.incentiviseGuardians(safeId)
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
+      logger.error(e)
       return this.error<boolean>(e)
     }
   }
@@ -146,6 +154,7 @@ export class SafeServiceImpl extends Service implements SafeService {
       1
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
+      logger.error(e)
       return this.error<boolean>(e)
     }
   }
