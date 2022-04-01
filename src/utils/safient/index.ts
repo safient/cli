@@ -2,6 +2,7 @@ import { Network, SafeMeta } from '../../types'
 import { accountService, safeService } from '../../services'
 
 import { success, info, error } from '../message'
+import { errorLog, infoLog } from '../logger/logger'
 
 const DEFAULT_CONFIG = {
   name: '',
@@ -32,17 +33,17 @@ export class Safient {
 
   async createUser(name: string, email: string): Promise<boolean> {
     if (!accountService.account || !accountService.safient) {
-      console.log(error('User needs to connect the wallet first '))
+      errorLog('User needs to connect the wallet first ', `Error while connecting user wallet @ ${Date.now()}`)
       return false
     }
 
     const user = await accountService.create(name, email, false)
     if (user.hasError()) {
-      console.log(error(`Error while creating the new user : ${user.error?.message} `))
+      errorLog(`Error while creating the new user : ${user.error?.message} `, `Error, ${JSON.stringify(user.error)} @ ${Date.now()}`)
       return false
     }
 
-    console.log(success('A new user account has been suuccessfully createed 🔐 : '))
+    infoLog('A new user account has been suuccessfully created', `User created @ ${Date.now()}`)
     return true
   }
 
@@ -57,8 +58,7 @@ export class Safient {
 
     const safe = await safeService.create(safeName, safeDesc, beneficiary, data, onchain)
 
-    console.log(success('Safe has been created with id 🔐 : '), safe.data)
-
+    infoLog(`Safe has been created with id 🔐 : ${safe.data}`, `Safe was created with ${JSON.stringify(safe.data)} @ ${Date.now()}`)    
     return true
   }
 
@@ -67,10 +67,10 @@ export class Safient {
     const claimId = await safeService.claim(safeId)
 
     if (claimId.hasError()) {
-      console.log(error('Error while creating safe: ' + claimId.getErrorMessage()))
+      errorLog(`Error while creating safe: ${claimId.getErrorMessage()}`, `Error while creating safe ${JSON.stringify(claimId.error)} @ ${Date.now()}`)
       return false
     } else {
-      console.log(success('Claim ID 🔐: '), claimId.data)
+      infoLog(`Claim ID 🔐: ${claimId.data}`, `Claim ID created @ ${Date.now()}`)
       return true
     }
   }
@@ -80,11 +80,11 @@ export class Safient {
     const result = await safeService.signal(safeId)
 
     if (result.hasError()) {
-      console.log(error('Error while signaling a safe: ' + result.getErrorMessage()))
+      errorLog(`Error while signaling safe: ${result.getErrorMessage()}`, `Error while signaling safe ${JSON.stringify(result.error)} @ ${Date.now()}`)
       return false
     }
     if (result.data === true) {
-      console.log(success('Signal Created 🏁'))
+      infoLog(`'Signal Created 🏁'`, `'Signal Created' @ ${Date.now()}`)
       return true
     } else {
       console.log(error('Signal Could not be created'))
@@ -97,11 +97,10 @@ export class Safient {
     const result = await safeService.recover(safeId)
     console.log(result)
     if (result.hasError()) {
-      console.log(error('Error while recovering a safe: ' + result.getErrorMessage()))
+      errorLog(`Error while recovering a safe:  ${result.getErrorMessage()}`, `Error while recovering a safe ${JSON.stringify(result.error)} @ ${Date.now()}`)
       return false
     }
-    console.log(success('Safe has been recovered: '), result)
-
+    infoLog(`Safe has been recovered: ${result}`, `'Safe Recovered' @ ${Date.now()}`)
     return true
   }
 
@@ -110,11 +109,10 @@ export class Safient {
     const safe = await safeService.get(safeId)
 
     if (safe.hasError()) {
-      console.log(error('Error while fetching safe:'), safe.getErrorMessage())
+      errorLog(`Error while fetching safe:  ${safe.getErrorMessage()}`, `Error while fetching safe ${JSON.stringify(safe.error)} @ ${Date.now()}`)
       return false
     }
-
-    console.log(success('Safe details 🔐 : '), safe.data)
+    infoLog(`Safe details 🔐 : ${safe.data}`, `'Safe data fetched' @ ${Date.now()}`)
     return true
   }
 }

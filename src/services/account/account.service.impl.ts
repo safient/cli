@@ -6,6 +6,7 @@ import { Service } from '../core/service'
 import { Wallet } from '../../utils/wallet'
 import { SafientCore } from '@safient/core'
 import { DatabaseType, Network, User } from '../../types'
+import { errorLogger } from '../../utils/logger/logger'
 
 const apiKey = process.env.USER_API_KEY
 const secret = process.env.USER_API_SECRET
@@ -40,6 +41,7 @@ export class AccountServiceImpl extends Service implements AccountService {
       )
       return await this.login()
     } catch (e: any) {
+      errorLogger.error(e)
       return this.error<User>(e.error)
     }
   }
@@ -54,6 +56,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(this.user)
     } catch (e: any) {
+      errorLogger.error(e)
       return this.error<User>(e.error)
     }
   }
@@ -64,6 +67,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(user.data as User)
     } catch (e: any) {
+      errorLogger.error(e)
       return this.error<User>(e.error)
     }
   }
@@ -82,6 +86,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(this.user)
     } catch (e: any) {
+      errorLogger.error(e)
       return this.error<User>(e.error)
     }
   }
