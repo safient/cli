@@ -3,15 +3,19 @@ const { combine, errors, json } = format;
 import path from 'path'
 import { success, error, warning } from '../message';
 
+const infoFile = path.join('Logs', "info.log")
+const errorFile = path.join('Logs', "error.log")
+const warnFile = path.join('Logs', "warn.log")
 
-export const logger = createLogger({
+export const infologger = createLogger({
+  level: "info",
     format: combine(
       errors({ stack: true }),
       json()
     ),
     transports: [
-      new transports.File({filename: 'info.log', level: 'info'}),
-      new transports.File({filename: 'warn.log', level: 'warn'})
+      new transports.File({filename: infoFile, level: 'info'}),
+      
     ]
   });
 
@@ -22,12 +26,23 @@ export const logger = createLogger({
       json()
     ),
     transports: [
-      new transports.File({filename: 'error.log'}),
+      new transports.File({filename: errorFile}),
+    ]
+  });
+
+  export const warnLogger = createLogger({
+    level: 'warn',
+    format: combine(
+      errors({ stack: true }),
+      json()
+    ),
+    transports: [
+      new transports.File({filename: warnFile}),
     ]
   });
 
 export const infoLog = (consoleData: string, loggerData: string ): void => {
-  logger.info(loggerData);
+  infologger.info(loggerData);
   console.log(success(consoleData));
 }
 

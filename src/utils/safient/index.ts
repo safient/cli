@@ -112,7 +112,7 @@ export class Safient {
       errorLog(`Error while fetching safe:  ${safe.getErrorMessage()}`, `Error while fetching safe ${JSON.stringify(safe.error)} @ ${Date.now()}`)
       return false
     }
-    infoLog(`Safe details 🔐 : ${safe.data}`, `'Safe Recovered' @ ${Date.now()}`)
+    infoLog(`Safe details 🔐 : ${safe.data}`, `'Safe data fetched' @ ${Date.now()}`)
     return true
   }
 }
