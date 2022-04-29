@@ -11,6 +11,16 @@ export const smsTemplate = {
                 
         `
     },
+
+    createSafe: {
+        id: 'create-safe-sms',
+        subject: "You are added as Beneficary",
+        data: `
+                A safe has been created with you as beneficary.
+                Login at ${APP_URL} to take further action.
+                
+        `
+    },
     signal: {
         id: 'signal-sms',
         subject: "A signal has been created for your claim",
@@ -19,7 +29,9 @@ export const smsTemplate = {
                Login at ${APP_URL} to check the status.
             
         `
-    },
+    }
+    
+    ,
     recovery: {
         id: 'recovery-sms',
         subject: "Your safe is recovered!",
