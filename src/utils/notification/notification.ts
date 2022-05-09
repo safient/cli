@@ -30,7 +30,7 @@ export const sendClaimNofitication = async (
       emailTemplate.claim.data,
       emailTriggerParamater,
     )
-    if(phone){
+    if (phone) {
       await sendMsg(smsTemplate.claim.id, smsTemplate.claim.data, smsTriggerParamater)
     }
 
@@ -66,8 +66,12 @@ export const sendCreateSafeNofitication = async (
       emailTemplate.createSafe.data,
       emailTriggerParamater,
     )
-    if(phone){
-      await sendMsg(smsTemplate.createSafe.id, smsTemplate.createSafe.data, smsTriggerParamater)
+    if (phone) {
+      await sendMsg(
+        smsTemplate.createSafe.id,
+        smsTemplate.createSafe.data,
+        smsTriggerParamater,
+      )
     }
 
     return true
@@ -103,7 +107,6 @@ export const sendSignalNotification = async (
   }
 }
 
-
 export const sendRecoveryNotification = async (
   emailId: string,
   phone: string,
@@ -131,8 +134,12 @@ export const sendRecoveryNotification = async (
       emailTemplate.recovery.data,
       triggerParamater,
     )
-    if(phone){
-      await sendMsg(smsTemplate.recovery.id, smsTemplate.recovery.data, smsTriggerParamater)
+    if (phone) {
+      await sendMsg(
+        smsTemplate.recovery.id,
+        smsTemplate.recovery.data,
+        smsTriggerParamater,
+      )
     }
 
     return true

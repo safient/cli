@@ -35,7 +35,7 @@ export const emailTemplate = {
             <div class="container" style="margin: 0; box-sizing: border-box; padding: 3rem; background-color: #fff">
               <div class="content" style="margin: 0; padding: 0; box-sizing: border-box; font-size: 1rem">
                 <h2 style="margin: 0; padding: 0; box-sizing: border-box; margin-bottom: 1.6rem; font-size: 1rem">
-                  Hello Safien👋
+                  Hello there 👋
                 </h2>
         
                 <p
@@ -181,7 +181,7 @@ export const emailTemplate = {
             <div class="container" style="margin: 0; box-sizing: border-box; padding: 3rem; background-color: #fff">
               <div class="content" style="margin: 0; padding: 0; box-sizing: border-box; font-size: 1.6rem">
                 <h2 style="margin: 0; padding: 0; box-sizing: border-box; margin-bottom: 1.6rem; font-size: 1.8rem">
-                  Hello Safien👋
+                  Hello there 👋
                 </h2>
         
                 <p
@@ -196,7 +196,7 @@ export const emailTemplate = {
                     max-width: 70rem;
                   "
                 >
-                A signal has been created for your safe. Login at ${APP_URL} to check the status.
+                A signal has been created for your safe. Login at ${WALLET_URL} to check the status.
                 </p>
         
                 <div class="signature" style="margin: 0; padding: 0; box-sizing: border-box">
@@ -328,7 +328,7 @@ export const emailTemplate = {
             <div class="container" style="margin: 0; box-sizing: border-box; padding: 3rem; background-color: #fff">
               <div class="content" style="margin: 0; padding: 0; box-sizing: border-box; font-size: 1.6rem">
                 <h2 style="margin: 0; padding: 0; box-sizing: border-box; margin-bottom: 1.6rem; font-size: 1.8rem">
-                  Hello Safien👋
+                  Hello there 👋
                 </h2>
         
                 <p
@@ -343,7 +343,7 @@ export const emailTemplate = {
                     max-width: 70rem;
                   "
                 >
-                Your safe has been recovered 🎉. Login at ${APP_URL} to access your safe.
+                Your safe has been recovered 🎉. Login at ${WALLET_URL} to access your safe.
                 </p>
         
                 <div class="signature" style="margin: 0; padding: 0; box-sizing: border-box">
@@ -474,7 +474,7 @@ export const emailTemplate = {
           <div class="container" style="margin: 0; box-sizing: border-box; padding: 3rem; background-color: #fff">
             <div class="content" style="margin: 0; padding: 0; box-sizing: border-box; font-size: 1rem">
               <h2 style="margin: 0; padding: 0; box-sizing: border-box; margin-bottom: 1.6rem; font-size: 1rem">
-                Hello Safien👋
+                Hello there 👋
               </h2>
       
               <p

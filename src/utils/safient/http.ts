@@ -3,7 +3,11 @@ import express from 'express'
 import cors from 'cors'
 import type { Server } from 'http'
 import { accountService, safeService } from '../../services'
-import { sendClaimNofitication, sendCreateSafeNofitication, sendRecoveryNotification } from '../notification/notification'
+import {
+  sendClaimNofitication,
+  sendCreateSafeNofitication,
+  sendRecoveryNotification,
+} from '../notification/notification'
 import bodyParser from 'body-parser'
 
 export const createApp = async (): Promise<express.Express> => {
