@@ -1,6 +1,6 @@
 {
   "name": "@safient/cli",
-  "version": "0.1.7-alpha",
+  "version": "0.1.8-alpha",
   "description": "Safient CLI tool to run a Safien worker and interact with the safes on Safient protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
     "@notifire/core": "*",
     "@notifire/ses": "*",
     "@notifire/sns": "*",
-    "@safient/core": "^0.1.17-alpha",
+    "@safient/core": "^0.1.18-alpha",
     "bip39": "^3.0.4",
     "body-parser": "^1.19.0",
     "chai": "^4.3.4",

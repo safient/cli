@@ -57,7 +57,7 @@ export class Safient {
     console.log(info('Creating a new safe'))
 
     const safe = await safeService.create(safeName, safeDesc, beneficiary, data, onchain)
-
+    console.log(safe)
     infoLog(`Safe has been created with id 🔐 : ${safe.data}`, `Safe was created with ${JSON.stringify(safe.data)} @ ${Date.now()}`)    
     return true
   }

@@ -3,7 +3,7 @@ import { SafeService } from './safe.service'
 import { ServiceResponse } from '../core/service-response'
 import { accountService } from '../core/services'
 import { Service } from '../core/service'
-import { CryptoSafe, SecretSafe, Safe, SafeStore } from '../../types'
+import { CryptoSafe, SecretSafe, Safe, SafeStore, SafeStage } from '../../types'
 import {
   sendClaimNofitication,
   sendCreateSafeNofitication,
@@ -45,7 +45,6 @@ export class SafeServiceImpl extends Service implements SafeService {
         0,
         { email: beneficiary },
       )
-
       if(safe.data?.id){
         await sendCreateSafeNofitication(beneficiary, '', safe.data.id, '')
       }
@@ -134,9 +133,13 @@ export class SafeServiceImpl extends Service implements SafeService {
         accountService.user.did,
       )
 
-      if(reconstruct.data){
-        await sendRecoveryNotification(accountService.user.email, '', safeId, '')
+      const safeData = await accountService.safient.getSafe(safeId);
+      const userData = await accountService.safient.getUser({did: safeData.data?.beneficiary})
+
+      if(reconstruct.data && safeData.data?.stage === SafeStage.RECOVERED){
+        await sendRecoveryNotification(userData.data!.email, '', safeId, '');
       }
+      
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
       errorLogger.error(e)

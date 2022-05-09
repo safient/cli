@@ -86,6 +86,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(this.user)
     } catch (e: any) {
+      console.log(e)
       errorLogger.error(e)
       return this.error<User>(e.error)
     }

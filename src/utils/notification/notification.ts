@@ -126,9 +126,9 @@ export const sendRecoveryNotification = async (
     }
 
     const res = await sendEmail(
-      emailTemplate.signal.id,
-      emailTemplate.signal.subject,
-      emailTemplate.signal.data,
+      emailTemplate.recovery.id,
+      emailTemplate.recovery.subject,
+      emailTemplate.recovery.data,
       triggerParamater,
     )
     if(phone){
