@@ -3,7 +3,11 @@ import express from 'express'
 import cors from 'cors'
 import type { Server } from 'http'
 import { accountService, safeService } from '../../services'
-import { sendClaimNofitication } from '../notification/notification'
+import {
+  sendClaimNofitication,
+  sendCreateSafeNofitication,
+  sendRecoveryNotification,
+} from '../notification/notification'
 import bodyParser from 'body-parser'
 
 export const createApp = async (): Promise<express.Express> => {
@@ -41,8 +45,23 @@ export const createApp = async (): Promise<express.Express> => {
     const phone: string = req.body.phone ? req.body.phone.toString() : ''
     const claimId: string = req.body.claimId ? req.body.claimId.toString() : ''
     const safeId: string = req.body.safeId ? req.body.safeId.toString() : ''
-    console.log(emailId, phone, claimId, safeId)
     const res = await sendClaimNofitication(emailId, phone, safeId, claimId)
+    resp.json({ status: res })
+  })
+
+  app.postAsync('/notify/create', async (req, resp) => {
+    const emailId: string = req.body.emailId ? req.body.emailId.toString() : ''
+    const phone: string = req.body.phone ? req.body.phone.toString() : ''
+    const safeId: string = req.body.safeId ? req.body.safeId.toString() : ''
+    const res = await sendCreateSafeNofitication(emailId, phone, safeId, '')
+    resp.json({ status: res })
+  })
+
+  app.postAsync('/notify/recovery', async (req, resp) => {
+    const emailId: string = req.body.emailId ? req.body.emailId.toString() : ''
+    const phone: string = req.body.phone ? req.body.phone.toString() : ''
+    const safeId: string = req.body.safeId ? req.body.safeId.toString() : ''
+    const res = await sendRecoveryNotification(emailId, phone, safeId, '')
     resp.json({ status: res })
   })
 

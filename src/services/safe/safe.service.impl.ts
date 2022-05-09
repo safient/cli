@@ -3,10 +3,11 @@ import { SafeService } from './safe.service'
 import { ServiceResponse } from '../core/service-response'
 import { accountService } from '../core/services'
 import { Service } from '../core/service'
-import { CryptoSafe, SecretSafe, Safe, SafeStore } from '../../types'
+import { CryptoSafe, SecretSafe, Safe, SafeStore, SafeStage } from '../../types'
 import {
   sendClaimNofitication,
-  sendSignalNotification,
+  sendCreateSafeNofitication,
+  sendRecoveryNotification,
 } from '../../utils/notification/notification'
 import { SafientResponse } from '@safient/core/dist/lib/services'
 import { EventResponse } from '@safient/core/dist/lib/types'
@@ -44,6 +45,9 @@ export class SafeServiceImpl extends Service implements SafeService {
         0,
         { email: beneficiary },
       )
+      if (safe.data?.id) {
+        await sendCreateSafeNofitication(beneficiary, '', safe.data.id, '')
+      }
 
       return this.success<string>(safe.data?.id as string)
     } catch (e: any) {
@@ -128,6 +132,16 @@ export class SafeServiceImpl extends Service implements SafeService {
         safeId,
         accountService.user.did,
       )
+
+      const safeData = await accountService.safient.getSafe(safeId)
+      const userData = await accountService.safient.getUser({
+        did: safeData.data?.beneficiary,
+      })
+
+      if (reconstruct.data && safeData.data?.stage === SafeStage.RECOVERED) {
+        await sendRecoveryNotification(userData.data!.email, '', safeId, '')
+      }
+
       return this.success<boolean>(reconstruct.data as boolean)
     } catch (e: any) {
       errorLogger.error(e)

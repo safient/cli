@@ -38,6 +38,42 @@ export class AccountServiceImpl extends Service implements AccountService {
         DatabaseType.threadDB,
         apiKey,
         secret,
+        [
+          1,
+          85,
+          111,
+          104,
+          179,
+          110,
+          247,
+          223,
+          189,
+          63,
+          226,
+          185,
+          155,
+          73,
+          91,
+          63,
+          39,
+          46,
+          0,
+          15,
+          32,
+          228,
+          44,
+          27,
+          24,
+          67,
+          174,
+          70,
+          47,
+          35,
+          196,
+          30,
+          130,
+          137,
+        ],
       )
       return await this.login()
     } catch (e: any) {
@@ -86,6 +122,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
       return this.success<User>(this.user)
     } catch (e: any) {
+      console.log(e)
       errorLogger.error(e)
       return this.error<User>(e.error)
     }

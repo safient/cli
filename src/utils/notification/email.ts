@@ -17,7 +17,7 @@ export const sendEmail = async (
         region: process.env.SES_REGION!,
         accessKeyId: process.env.ACCESS_KEY!,
         secretAccessKey: process.env.ACCESS_SECRET!,
-        from: 'hello@safient.io',
+        from: 'Safient Support <hello@safient.io>',
       }),
     )
 
