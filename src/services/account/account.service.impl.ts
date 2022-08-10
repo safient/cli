@@ -33,11 +33,7 @@ export class AccountServiceImpl extends Service implements AccountService {
     try {
       // Initialize Safient core.
       this.safient = new SafientCore(
-        this.account,
         parseInt(this.network.toString()),
-        DatabaseType.threadDB,
-        apiKey,
-        secret,
       )
       return await this.login()
     } catch (e: any) {
@@ -48,7 +44,7 @@ export class AccountServiceImpl extends Service implements AccountService {
 
   async login(): Promise<ServiceResponse<User>> {
     try {
-      const user = await this.safient.loginUser()
+      const user = await this.safient.loginUser(this.account)
 
       if (user.data) {
         this.user = user.data
@@ -79,7 +75,7 @@ export class AccountServiceImpl extends Service implements AccountService {
   ): Promise<ServiceResponse<User>> {
     try {
       const userAddress = await this.account.getAddress()
-      const user = await this.safient.createUser(name, email, 0, userAddress, guardian)
+      const user = await this.safient.createUser(this.account, {name: name, email: email}, guardian)
       if (user.data) {
         this.user = user.data
       }
