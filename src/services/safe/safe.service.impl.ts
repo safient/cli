@@ -35,15 +35,11 @@ export class SafeServiceImpl extends Service implements SafeService {
       }
 
       const safe = await accountService.safient.createSafe(
-        safeName,
-        safeDescription,
-        accountService.user.did,
         safeData,
-        onchain,
-        0,
-        0,
-        0,
         { email: beneficiary },
+        { type: 0, period: 0 },
+        { name: safeName, description: safeDescription },
+        onchain,
       )
       if (safe.data?.id) {
         await sendCreateSafeNofitication(beneficiary, '', safe.data.id, '')
@@ -70,20 +66,14 @@ export class SafeServiceImpl extends Service implements SafeService {
   //Currently signal based claim
   async claim(safeId: string): Promise<ServiceResponse<number>> {
     try {
-      const file = {
-        name: 'dummy.pdf',
-      }
       let disputeId: number = 0
       const response: SafientResponse<EventResponse> = await accountService.safient.createClaim(
         safeId,
-        file,
-        'Claim evidence',
-        'Lorsem Text',
       )
       if (response.data?.id) {
         disputeId = parseInt(response.data.id)
         await sendClaimNofitication(
-          response.data.recepient.email,
+          response.data.recepient.email!,
           '',
           safeId,
           response.data?.id,
@@ -133,13 +123,18 @@ export class SafeServiceImpl extends Service implements SafeService {
         accountService.user.did,
       )
 
+      // TODO: Throw error if claim doesn't exist
       const safeData = await accountService.safient.getSafe(safeId)
-      const userData = await accountService.safient.getUser({
-        did: safeData.data?.beneficiary,
-      })
-
-      if (reconstruct.data && safeData.data?.stage === SafeStage.RECOVERED) {
-        await sendRecoveryNotification(userData.data!.email, '', safeId, '')
+      
+      if (
+        reconstruct.data &&
+        safeData.data?.stage === SafeStage.RECOVERED &&
+        safeData.data?.beneficiary
+      ) {
+        const userData = await accountService.safient.getUser({
+          did: safeData.data?.beneficiary,
+        })
+        await sendRecoveryNotification(userData.data!.email!, '', safeId, '')
       }
 
       return this.success<boolean>(reconstruct.data as boolean)

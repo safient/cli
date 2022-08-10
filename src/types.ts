@@ -67,4 +67,4 @@ export type CryptoSafe = Types.CryptoSafe
 
 export type SafeStore = Types.SafeStore
 
-export const Error = Errors.Errors
+export const Error = Errors
