@@ -73,7 +73,7 @@ export class Wallet {
     if (network == Network.local || network == Network.devnet) {
       provider = new providers.JsonRpcProvider(networks.localhost.url)
     } else if (network == Network.testnet) {
-      provider = new providers.JsonRpcProvider(networks.kovan.url)
+      provider = new providers.JsonRpcProvider(networks.polygontestnet.url)
     } else {
       provider = new providers.JsonRpcProvider(networks.mainnet.url)
     }
